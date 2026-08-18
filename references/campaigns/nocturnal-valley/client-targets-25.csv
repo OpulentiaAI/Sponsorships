@@ -1,0 +1,26 @@
+company,category,domain,region_fit,activation_lead,activation_lead_source,note
+Anheuser-Busch,beer,,st_louis_hq,,,"Client list reads 'Anheuser-Busch or its St. Louis distributor'. Two different legal entities with two different sponsorship desks. Client picks one."
+4 Hands Brewing,beer,4handsbrewery.com,st_louis_local,,,
+Schlafly Beer,beer,schlafly.com,st_louis_local,,,
+BeatBox Beverages,rtd_alcohol,beatboxbeverages.com,national,"Listed sponsor, Electric Forest 2026 (June 25-28, Rothbury MI)",https://www.electricforest.com/sponsors/,"Client's own pick, and the strongest comp on the list: Midwest electronic camping festival. Age-gated activation."
+Liquid Death,water,liquiddeath.com,national,,,"Heavy music-festival activation history."
+Electrolit,hydration,electrolit.com,national,"Listed sponsor, Electric Forest 2026; EDC Las Vegas 2026 Discovery Project",https://www.electricforest.com/sponsors/,"Client's own pick, confirmed active in EDM sponsorship in 2026. The sponsors page renders client-side; read it in a browser session."
+Celsius,energy,celsius.com,national,,,
+C4 Energy,energy,c4energy.com,national,,,
+Ghost Energy,energy,ghostlifestyle.com,national,"Exclusive energy partner, Insomniac/EDC (multi-year)",https://www.bevnet.com/news/2023/ghost-and-insomniac-spark-an-electrifying-multi-year-partnership/,"Client's own pick. Category may already be locked by the Insomniac deal — check exclusivity before pitching."
+Proper Cannabis,cannabis,,missouri,,,"Compliance-gated category. Domain not supplied."
+Good Day Farm,cannabis,,missouri,,,"Compliance-gated category. Domain not supplied."
+Greenlight Dispensary,cannabis,,missouri,,,"Compliance-gated category. Domain not supplied."
+Head Change,cannabis,,unknown,,,"Ambiguous entity. Several unrelated businesses use this name."
+Bass Pro Shops,camping_outdoor,basspro.com,missouri_hq,,,
+Coleman,camping_outdoor,coleman.com,national,,,
+Jackery,portable_power,jackery.com,national,,,
+EcoFlow,portable_power,ecoflow.com,national,,,
+Casey's,convenience_fuel,caseys.com,midwest,,,
+QuikTrip,convenience_fuel,quiktrip.com,midwest,,,
+Schnucks,grocery,schnucks.com,st_louis_local,,,
+Together Credit Union,finance,togethercu.org,st_louis_local,,,
+First Community Credit Union,finance,firstcommunity.com,st_louis_local,,,
+Imo's Pizza,food,imospizza.com,st_louis_local,,,
+Drury Hotels,hospitality,druryhotels.com,st_louis_hq,,,
+Explore St. Louis,tourism,explorestlouis.com,st_louis_local,,,

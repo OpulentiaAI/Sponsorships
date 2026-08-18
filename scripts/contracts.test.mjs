@@ -57,6 +57,15 @@ test("the skill has one discoverable root and only references and scripts beneat
   assert.equal(existsSync(resolve(scriptDir, "brief.mjs")), true);
 });
 
+test("the original 25-company client list is preserved exactly in the working targets", () => {
+  const campaign = resolve(skillDir, "references/campaigns/nocturnal-valley");
+  const clientRows = readFileSync(resolve(campaign, "client-targets-25.csv"), "utf8").trim().split(/\r?\n/);
+  const workingRows = readFileSync(resolve(campaign, "targets.csv"), "utf8").trim().split(/\r?\n/);
+  assert.equal(clientRows.length - 1, 25);
+  assert.deepEqual(clientRows, workingRows.slice(0, 26));
+  assert.equal(new Set(clientRows.slice(1).map((row) => row.split(",", 1)[0])).size, 25);
+});
+
 test("scripts pin skill data to SKILL.md and artifacts to the workspace cwd", async () => {
   const src = await readFile(resolve(scriptDir, "campaign.mjs"), "utf8");
   assert.match(src, /export const SKILL_ROOT/);

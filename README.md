@@ -82,7 +82,9 @@ references/                       disclosed contracts plus campaign, agency, and
     sources/                      the property's decks, bit-for-bit, checksummed
     deck-facts.md                 every deck claim with its slide citation
     festival-packet.json          the property being sold; client-supplied, not verified
-    targets.csv + exclusions.csv  the campaign's list and rule gates
+    client-targets-25.csv         the original client-supplied list, kept unchanged
+    targets.csv                   the 25 client targets plus seven approved additions
+    exclusions.csv                the campaign's rule gates
     comparable-events.json        the discovery universe, tiered by the deck's own ICP
     sponsor-competitor-profile.json Bob's approved sponsor categories and person rule
   templates/                      dossier, packet, and React Email stationery
@@ -101,6 +103,6 @@ scripts/                          executable workflow, contract tests, optional 
 
 ## Sources
 
-The festival facts, the target list, and the exclusion flag come from the client's own materials: a 15-page sponsorship deck, a 9-slide revision, a 25-company list, a sample outreach email, and the meeting note. Each field in the campaign's `festival-packet.json` names which one it came from.
+The festival facts, the target list, and the exclusion flag come from the client's own materials: a 15-page sponsorship deck, a 9-slide revision, a 25-company list, a sample outreach email, and the meeting note. The original list is preserved separately in `references/campaigns/nocturnal-valley/client-targets-25.csv`; the working `targets.csv` adds seven approved vodka and tequila targets. Each field in the campaign's `festival-packet.json` names which one it came from.
 
 Client-supplied is not verified. It carries the same envelope as anything else.
