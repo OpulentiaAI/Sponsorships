@@ -1,0 +1,23 @@
+node_modules/
+scripts/dashboard/node_modules/
+scripts/dashboard/.next/
+.scratch/
+*.log
+*.tsbuildinfo
+.DS_Store
+
+# Campaign lists and exclusion rules ship, because they are the demo's input and carry
+# no personal data — company names, categories, public domains. A list with named
+# contacts does not belong in git.
+references/campaigns/*/*-private.csv
+
+# Run output
+/artifacts/
+
+# Local preview config
+.claude/
+
+# Secrets never enter git. This repository is public.
+.env
+.env.*
+!.env.example

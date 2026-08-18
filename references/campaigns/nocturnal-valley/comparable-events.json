@@ -1,0 +1,118 @@
+{
+  "_comment": "The discovery universe: events comparable to Nocturnal Valley, ranked by how much a sponsorship there says about fit here. The ICP is the deck's own (slide 4): 24-34 primary / 18-23 secondary, Midwest, experience seekers, electronic music and camping. A company on one of these sponsor lists arrives with dated activation evidence by construction — which is the entire advantage over brainstorming categories. Verification states are honest: 'verified' means read in a session with the date noted; everything else is checked during discovery, never assumed.",
+  "icp": {
+    "audience": "24-34 primary, 18-23 secondary, Midwest, experience seekers",
+    "format": "multi-day electronic music + camping",
+    "market": "St. Louis (venue: Astral Valley Art Park, French Village, MO)",
+    "window": "sponsorships dated 2026, strongest in Q2-Q3 (the season a September festival's budgets move in)",
+    "source": "knowledge/deck-facts.md, slides 2 and 4"
+  },
+  "tiers": {
+    "1_same_format_and_region": "Midwest + electronic + camping. A sponsor here has already bought exactly what Nocturnal Valley sells.",
+    "2_same_market": "St. Louis events of any format. The sponsor already spends in this market; Evolution's pause frees those budgets for 2026.",
+    "3_national_edm": "National electronic properties. Proves category appetite and an experiential budget; regional fit still needs its own evidence.",
+    "4_same_venue": "Prior events at Astral Valley Art Park itself. The strongest possible comp when it exists."
+  },
+  "events": [
+    {
+      "key": "electric-forest-2026",
+      "name": "Electric Forest",
+      "edition": "2026 (June 25-28)",
+      "location": "Rothbury, MI",
+      "tier": "1_same_format_and_region",
+      "sponsor_source": "https://www.electricforest.com/sponsors/",
+      "verification": "verified 2026-08-13: sponsor list read this session (Sun Cruiser, BeatBox, Electrolit, White Claw, Coca-Cola, Ford Bronco, Cash App, and more). The list renders client-side — read it in a browser session, not a raw fetch."
+    },
+    {
+      "key": "north-coast-2026",
+      "name": "North Coast Music Festival",
+      "edition": "2026 (Labor Day weekend, expected)",
+      "location": "Chicago, IL",
+      "tier": "1_same_format_and_region",
+      "sponsor_source": "https://northcoastfestival.com",
+      "verification": "unverified: confirm the 2026 edition and locate the sponsor page during discovery."
+    },
+    {
+      "key": "arc-2026",
+      "name": "ARC Music Festival",
+      "edition": "2026 (Labor Day weekend, expected)",
+      "location": "Chicago, IL",
+      "tier": "1_same_format_and_region",
+      "sponsor_source": "https://arcmusicfestival.com",
+      "verification": "unverified: confirm the 2026 edition and locate the sponsor page during discovery."
+    },
+    {
+      "key": "summer-camp",
+      "name": "Summer Camp Music Festival",
+      "edition": "status uncertain",
+      "location": "Chillicothe, IL",
+      "tier": "1_same_format_and_region",
+      "sponsor_source": "https://summercampfestival.com",
+      "verification": "unverified: the festival's continuation is uncertain — confirm it still runs before harvesting; a defunct edition's sponsors are still tier-2 leads for the region."
+    },
+    {
+      "key": "evolution-stl",
+      "name": "Evolution Festival",
+      "edition": "2025 (paused for 2026)",
+      "location": "St. Louis, MO (Forest Park)",
+      "tier": "2_same_market",
+      "sponsor_source": "https://evolutionfestival.com",
+      "verification": "verified 2026-08-13: STLPR reported 2025-11-24 the festival is paused for 2026. Named sponsors include Anheuser-Busch and World Wide Technology, plus Explore St. Louis and civic partners.",
+      "note": "The pause is the opportunity: every 2025 Evolution sponsor has a proven St. Louis festival budget with no 2026 home. This list outranks its tier for that reason."
+    },
+    {
+      "key": "music-at-the-intersection",
+      "name": "Music at the Intersection",
+      "edition": "2026 (September, expected)",
+      "location": "St. Louis, MO (Grand Center)",
+      "tier": "2_same_market",
+      "sponsor_source": "https://musicattheintersection.org",
+      "verification": "unverified: confirm the 2026 edition and sponsor page during discovery."
+    },
+    {
+      "key": "edc-las-vegas-2026",
+      "name": "EDC Las Vegas",
+      "edition": "2026 (May 15-17)",
+      "location": "Las Vegas, NV",
+      "tier": "3_national_edm",
+      "sponsor_source": "https://lasvegas.electricdaisycarnival.com",
+      "verification": "verified 2026-08-13 in part: Electrolit's Discovery Project sponsorship via BevNET (2026-03-19); GHOST holds the exclusive energy slot via the multi-year Insomniac deal. Q2 2026 — inside the window."
+    },
+    {
+      "key": "ultra-miami-2026",
+      "name": "Ultra Music Festival",
+      "edition": "2026 (March)",
+      "location": "Miami, FL",
+      "tier": "3_national_edm",
+      "sponsor_source": "https://ultramusicfestival.com/sponsors/",
+      "verification": "verified 2026-08-13: page read this session listing Red Bull, Dom Perignon, Volcan X.A, Belvedere, Hennessy, Nutrl, White Claw — but the page header shows 2027 dates, so pin which edition the list describes before quoting it as 2026 evidence."
+    },
+    {
+      "key": "coachella-2026",
+      "name": "Coachella (spirits activations)",
+      "edition": "2026 (April — Q2)",
+      "location": "Indio, CA",
+      "tier": "3_national_edm",
+      "sponsor_source": "https://www.eventmarketer.com/article/coachella-2026-experiential/",
+      "verification": "verified 2026-08-13: Event Marketer recap read this session — Absolut (official vodka, Heat Haus), 818 Tequila (818 Outpost, Apr 10), Ciroc (Athletic Club), Aperol, Heineken. Not electronic-first, but the definitive Q2 2026 record of which drinks brands buy festival activations."
+    },
+    {
+      "key": "lollapalooza-2026",
+      "name": "Lollapalooza",
+      "edition": "2026 (July-August)",
+      "location": "Chicago, IL (Grant Park)",
+      "tier": "3_national_edm",
+      "sponsor_source": "https://variety.com/2026/shopping/news/lollapalooza-sponsors-activations-giveaways-merch-1236825616/",
+      "verification": "partially verified 2026-08-13: Variety's recap (paywalled past the redirect) names NUTRL and Coca-Cola activations; Midwest market, mixed genre with a large electronic stage."
+    },
+    {
+      "key": "astral-valley-prior",
+      "name": "Prior events at Astral Valley Art Park",
+      "edition": "any",
+      "location": "French Village, MO",
+      "tier": "4_same_venue",
+      "sponsor_source": "https://www.astralvalley.com",
+      "verification": "unverified: the venue hosts other electronic events; any sponsor of an event on this exact site is the strongest comp that can exist. Confirm the venue's event history during discovery."
+    }
+  ]
+}

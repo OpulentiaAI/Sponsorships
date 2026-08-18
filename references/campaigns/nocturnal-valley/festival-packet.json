@@ -1,0 +1,165 @@
+{
+  "_comment": "The property being sold. Fixed input, not scraped. Every field carries where it came from, because the outreach draws its claims from here and a claim with no source cannot leave the building.",
+  "event_name": "Nocturnal Valley",
+  "edition": "inaugural",
+  "dates": {
+    "start": "2026-09-24",
+    "end": "2026-09-26",
+    "nights": 3,
+    "source": "client_deck",
+    "state": "supplied"
+  },
+  "venue": {
+    "name": "Astral Valley Art Park",
+    "market": "St. Louis, Missouri",
+    "distance_note": "About 45 minutes south of St. Louis",
+    "source": "client_sample_outreach",
+    "state": "supplied",
+    "locality": "French Village, MO",
+    "locality_source": "deck_key_art"
+  },
+  "format": {
+    "stages": [
+      "Astral",
+      "Nocturnal",
+      "Forest"
+    ],
+    "elements": [
+      "multi-day camping",
+      "VIP hospitality",
+      "wellness",
+      "art",
+      "creator content",
+      "product sampling"
+    ],
+    "source": "client_deck",
+    "state": "supplied"
+  },
+  "audience": {
+    "primary_age": "24-34",
+    "secondary_age": "18-23",
+    "household_income": "$60,000-$140,000",
+    "gender_split": "55% male / 45% female",
+    "region": "Midwest",
+    "interests": [
+      "music",
+      "travel",
+      "wellness",
+      "nightlife",
+      "fashion",
+      "social media"
+    ],
+    "source": "client_deck",
+    "state": "supplied"
+  },
+  "attendance": {
+    "value": null,
+    "state": "disputed",
+    "confidence": "Unknown",
+    "claims": [
+      {
+        "value": "more than 20,000 across three days",
+        "source": "client_sample_outreach",
+        "source_date": "2026-08-11"
+      },
+      {
+        "value": "about 7,500 per day, implying about 22,500 admissions across three days",
+        "source": "meeting_note",
+        "source_date": "2026-08-10"
+      }
+    ],
+    "reason": "Two client-supplied figures that do not reconcile, and they measure different things \u2014 total attendees against daily admissions. An inaugural festival has no gate history to settle it. No attendance number may appear in outreach until the client states one.",
+    "resolves_when": "Client confirms a single figure and says whether it counts unique attendees or daily admissions."
+  },
+  "packages": {
+    "range": "$10,000 to more than $100,000",
+    "rate_card_state": "supplied",
+    "rate_card": [
+      {
+        "tier": "Presenting Sponsor",
+        "range": "$100K+",
+        "includes": [
+          "Festival naming rights",
+          "Multi-stage integration",
+          "VIP experience access",
+          "Full content package",
+          "Maximum brand visibility"
+        ],
+        "source": "deck_draft_2_slide_7"
+      },
+      {
+        "tier": "Stage Sponsor",
+        "range": "$35K-$75K",
+        "includes": [
+          "Stage naming rights",
+          "On-stage activation",
+          "LED screen branding",
+          "Stage-area signage"
+        ],
+        "source": "deck_draft_2_slide_7"
+      },
+      {
+        "tier": "VIP Sponsor",
+        "range": "$20K-$50K",
+        "includes": [
+          "Hospitality integration",
+          "VIP lounge branding",
+          "Premium bar access",
+          "Guest experience perks"
+        ],
+        "source": "deck_draft_2_slide_7"
+      },
+      {
+        "tier": "Content Partner",
+        "range": "$15K-$40K",
+        "includes": [
+          "Social media integration",
+          "Creator programming"
+        ],
+        "source": "deck_draft_2_slide_7"
+      },
+      {
+        "tier": "Sampling Partner",
+        "range": "$10K-$25K",
+        "includes": [
+          "Multi-day product sampling"
+        ],
+        "source": "deck_draft_2_slide_7"
+      }
+    ],
+    "inventory": null,
+    "inventory_state": "unsupplied",
+    "inventory_reason": "The rate card is the deck's own, slide 7. Which tiers remain open, and what the three in-motion sponsors hold, was never supplied. A pitch may name a tier and its published range; availability is never implied.",
+    "source": "client_deck",
+    "state": "partial"
+  },
+  "commercial_target": {
+    "raise": "$50,000 to $100,000",
+    "sponsor_count": 10,
+    "already_in_motion": 3,
+    "remaining_to_source": 7,
+    "source": "meeting_note",
+    "source_date": "2026-08-10",
+    "state": "supplied"
+  },
+  "window": {
+    "close_by_note": "Two to three weeks to lock in a deal",
+    "stated_on": "2026-08-11",
+    "implied_deadline": "2026-09-01",
+    "source": "client_email",
+    "state": "supplied"
+  },
+  "source_materials": [
+    "knowledge/sources/nocturnal-valley-deck-draft-1.pdf (15 pages)",
+    "knowledge/sources/nocturnal-valley-deck-draft-2.pptx (9 slides)",
+    "Client sample cold outreach, 2026-08-11 (reconstructed in knowledge/voice/voice-profile.md)",
+    "Client target list of 25 companies, 2026-08-11"
+  ],
+  "promoter": {
+    "name": "Downright Entertainment",
+    "claim": "Celebrating 10 years",
+    "source": "deck_key_art_slides_1_2_5",
+    "state": "supplied",
+    "note": "The festival is a first edition; the promoter is not. Usable in outreach in the sender's own words."
+  }
+}

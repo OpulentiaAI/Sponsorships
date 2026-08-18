@@ -1,0 +1,5 @@
+pattern,scope,reason,supplied_by,dated
+,already_in_motion,"Three sponsors were described as already in motion on the August 10 call. The names were never supplied. Until they are, no target can be cleared as 'not already in motion' — the loader flags the whole cohort as unverified against this rule rather than guessing.",unsupplied,
+,category_rule,"Sponsor exclusions and category rules were named as a required input and never delivered. Category conflicts with existing sponsors cannot be checked.",unsupplied,
+cannabis,compliance,"Age and compliance limits on activation. Client's own email flags this. A cannabis target may be researched but may not reach a draft until the client states the rule.",client_email_2026-08-11,2026-08-11
+NUTRL,client_decision,"Same building as the Anheuser-Busch row: NUTRL is an Anheuser-Busch brand and row 1 is unresolved. The client picks the entry point into that company before any pitch moves; pitching the subsidiary while the parent is open risks two people in one building.",meeting_context_2026-08-10,2026-08-13

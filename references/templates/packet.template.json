@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "stage": null,
+  "client": null,
+  "objective": null,
+  "source_mode": null,
+  "generated_at": null,
+  "scope": {
+    "rows_in": null,
+    "accepted": null,
+    "rejected": null,
+    "draftable": null,
+    "blocked_compliance": null,
+    "unique_companies": null,
+    "planned_calls": null,
+    "credit_budget": null,
+    "credits_spent": null
+  },
+  "excluded": [],
+  "sponsors": [],
+  "festival": {
+    "event_name": null,
+    "dates": null,
+    "venue": null,
+    "market": null,
+    "audience": null,
+    "attendance_state": null,
+    "attendance_claims": [],
+    "packages_range": null,
+    "inventory_state": null,
+    "commercial_target": null,
+    "window": null,
+    "source_materials": []
+  },
+  "messages": [],
+  "context_operations": [],
+  "data_health": {
+    "field_coverage_pct": null,
+    "null_rates": {},
+    "conflicts": null,
+    "identity_resolution_pct": null,
+    "quarantined": null
+  },
+  "open_gates": [],
+  "unknowns": []
+}

@@ -1,0 +1,33 @@
+{
+  "profile_id": "bob-target-list-2026-08-11",
+  "source": "Bob Dittrich's August 11 target list, including his explicit vodka and tequila addition",
+  "fit_rule": "A discovered sponsor qualifies when its dated activation is inside the rolling past year and its supported category maps to one of these client-approved sponsor categories.",
+  "category_aliases": {
+    "beer": ["beer", "brewery", "brewing", "lager", "craft beer"],
+    "rtd_alcohol": ["rtd", "ready to drink", "hard tea", "hard seltzer", "canned cocktail"],
+    "vodka": ["vodka", "vodka rtd", "vodka seltzer", "vodka iced tea"],
+    "tequila": ["tequila", "agave spirits", "agave spirit"],
+    "water": ["water", "sparkling water", "canned water"],
+    "hydration": ["hydration", "electrolyte", "sports drink"],
+    "energy": ["energy", "energy drink", "performance beverage"],
+    "cannabis": ["cannabis", "dispensary", "marijuana"],
+    "camping_outdoor": ["camping", "outdoor", "outdoor equipment", "sporting goods"],
+    "portable_power": ["portable power", "solar generator", "battery generator", "charging"],
+    "convenience_fuel": ["convenience store", "fuel", "gas station", "travel center"],
+    "grocery": ["grocery", "supermarket"],
+    "finance": ["credit union", "bank", "financial services", "finance"],
+    "food": ["pizza", "restaurant", "food", "quick service restaurant"],
+    "hospitality": ["hotel", "hospitality", "lodging"],
+    "tourism": ["tourism", "destination marketing", "convention and visitors bureau", "visitor bureau"]
+  },
+  "role_priority": [
+    "Brand Partnerships",
+    "Experiential Marketing",
+    "Sponsorships",
+    "Field Marketing",
+    "Trade Marketing",
+    "Community Relations",
+    "Marketing"
+  ],
+  "identity_rule": "General web search may discover candidate LinkedIn profile URLs. Only an exact /in/ URL may enter people retrieval, and the retrieved current title is compared back to the cited activation owner's title before the person is resolved."
+}

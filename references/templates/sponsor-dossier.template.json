@@ -1,0 +1,188 @@
+{
+  "id": null,
+  "company": null,
+  "domain": null,
+  "client_list": {
+    "category": null,
+    "region_fit": null,
+    "note": null
+  },
+  "identity": {
+    "confidence": null,
+    "validation_status": null,
+    "list_variance": null,
+    "alternates_considered": []
+  },
+  "discovery_route": {
+    "origin": null,
+    "parent_company": null,
+    "source_sponsor": null,
+    "source_sponsor_domain": null,
+    "source_sponsorship_title": null,
+    "source_sponsorship_date": null,
+    "source_sponsorship_url": null,
+    "sponsorship_title": null,
+    "sponsorship_date": null,
+    "activation_source_url": null,
+    "role_exemplar": {
+      "name": null,
+      "title": null,
+      "source_url": null
+    },
+    "nearest_title_comparator": {
+      "name": null,
+      "title": null,
+      "linkedin_url": null,
+      "source_url": null,
+      "match_score": null,
+      "state": null
+    },
+    "retrieved_profile_check": null
+  },
+  "gates": {
+    "draft_gate": null,
+    "draft_gate_reason": null,
+    "exclusion_check": null,
+    "exclusion_check_reason": []
+  },
+  "required_fields": {
+    "category_fit": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    },
+    "activation_history": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    },
+    "audience_overlap": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    },
+    "regional_presence": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    },
+    "budget_signal": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    },
+    "decision_maker": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    },
+    "decision_maker_title": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    },
+    "contact_route": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    },
+    "compliance_flags": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    },
+    "changes_since_last": {
+      "value": null,
+      "state": "pending_retrieval",
+      "confidence": "Unknown",
+      "source": null,
+      "source_url": null,
+      "observed_at": null
+    }
+  },
+  "brand": {
+    "domain": null,
+    "description": null,
+    "industries_eic": [],
+    "naics": [],
+    "sic": [],
+    "socials": {},
+    "hq_address": null,
+    "logo_url": null,
+    "palette": [],
+    "screenshot_url": null,
+    "typography": null
+  },
+  "activation_evidence": {
+    "signals": [],
+    "most_recent_dated": null,
+    "cadence_note": null,
+    "spend_band_observed": null
+  },
+  "conflict_check": {
+    "competitor_sponsors_named": [],
+    "category_exclusivity_risk": null,
+    "already_in_motion_state": null,
+    "checked_against": []
+  },
+  "fit": {
+    "band": null,
+    "rationale": null,
+    "package_band_suggested": null,
+    "counter_evidence": null
+  },
+  "operation": {
+    "natural_language_job": null,
+    "method": "POST",
+    "endpoint": null,
+    "body": {},
+    "expected_response": null,
+    "write_policy": "artifact_only_no_send",
+    "status": "proposed",
+    "receipt": null,
+    "credits": null
+  },
+  "unknowns": [],
+  "outreach": {
+    "reason_to_engage": null,
+    "reason_source_url": null,
+    "reason_observed_at": null,
+    "reason_rank": null,
+    "package_named": null,
+    "draft_html_path": null,
+    "draft_text_path": null,
+    "subject": null,
+    "preview_text": null,
+    "review_state": null,
+    "review_note": null,
+    "send_state": "draft_only_not_sent",
+    "sender_authority": "unconfirmed"
+  }
+}

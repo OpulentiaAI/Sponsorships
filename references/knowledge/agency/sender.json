@@ -1,0 +1,9 @@
+{
+  "_comment": "The agency's sending identity \u2014 Trifecta Marketing, constant across every campaign. Campaign packets carry the property being sold; this file carries who sells it.",
+  "name": "Robert Dittrich",
+  "preferred_name": "Bob",
+  "company": "Trifecta Marketing",
+  "calendly": "https://calendly.com/robertdittrich48/30min",
+  "authority_state": "unconfirmed",
+  "authority_reason": "The sending account and outreach permissions were never established. Every draft stays a draft until they are."
+}

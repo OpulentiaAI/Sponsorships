@@ -1,0 +1,32 @@
+{
+  "name": "opulent-sponsor-context-showcase",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "brief": "node scripts/brief.mjs",
+    "research": "node scripts/research.mjs",
+    "deliver": "node scripts/deliver.mjs",
+    "discover": "node scripts/discover_sponsors.mjs",
+    "dashboard": "npm --prefix scripts/dashboard run build",
+    "dashboard:serve": "npm --prefix scripts/dashboard run start",
+    "test": "node --test scripts/contracts.test.mjs",
+    "targets": "node scripts/load_targets.mjs --out artifacts/cohort.json",
+    "calls": "node scripts/run_calls.mjs",
+    "signal": "node scripts/scrape_signal.mjs",
+    "brand": "node scripts/extract_brand.mjs",
+    "assemble": "node scripts/assemble.mjs",
+    "email": "node scripts/render_email.mjs && node scripts/lint_pitch.mjs",
+    "validate": "node scripts/validate_packet.mjs artifacts/packet.json",
+    "lint:pitch": "node scripts/lint_pitch.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.1.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  }
+}
