@@ -258,6 +258,7 @@ Object.assign(packet, {
     preview_text: dossier.outreach.preview_text ?? null,
     package_named: dossier.outreach.package_named ?? null,
     draft_markdown_path: dossier.outreach.draft_markdown_path,
+    draft_gmail_html_path: dossier.outreach.draft_gmail_html_path ?? null,
     review_state: dossier.outreach.review_state ?? "not_required",
     send_state: dossier.outreach.send_state ?? "pending_draft",
   }] : [],

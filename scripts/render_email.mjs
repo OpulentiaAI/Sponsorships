@@ -30,6 +30,13 @@ function humanDates(startIso, endIso) {
   return `${months[sm - 1]} ${sd} to ${months[em - 1]} ${ed}, ${ey}`;
 }
 
+const escapeHtml = (value) => String(value ?? "")
+  .replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;")
+  .replaceAll("'", "&#39;");
+
 if (String(dossier.gates?.draft_gate ?? "").startsWith("blocked")) {
   console.error(`Refusing to draft: ${dossier.company} is ${dossier.gates.draft_gate}.`);
   console.error(`  ${dossier.gates.draft_gate_reason}`);
@@ -38,6 +45,7 @@ if (String(dossier.gates?.draft_gate ?? "").startsWith("blocked")) {
 
 const reason = dossier.outreach?.reason_to_engage ?? null;
 const reasonUrl = dossier.outreach?.reason_source_url ?? null;
+const personalNote = dossier.outreach?.personal_note ?? null;
 if (reason && !reasonUrl) {
   console.error("Refusing to draft: reason_to_engage has no reason_source_url.");
   process.exit(4);
@@ -45,6 +53,11 @@ if (reason && !reasonUrl) {
 if (dossier.required_fields?.activation_history?.state !== "retrieved") {
   console.error("Refusing to draft: activation_history is not retrieved.");
   console.error(`  ${dossier.required_fields?.activation_history?.reason ?? "No dated activation signal."}`);
+  process.exit(4);
+}
+if (personalNote && reason && personalNote.trim() === reason.trim()) {
+  console.error("Refusing to draft: personal_note copies the research finding verbatim.");
+  console.error("  Rewrite it in the sender's voice after reading the stored communication entries.");
   process.exit(4);
 }
 
@@ -60,18 +73,13 @@ const highlightTier = named && rateCard.some((t) => named.toLowerCase().includes
 const props = {
   greetingName,
   companyName: dossier.company ?? null,
-  personalNote: dossier.outreach?.personal_note ?? reason,
+  personalNote,
   reasonSourceUrl: reasonUrl ?? null,
   festivalName: festival.event_name ?? null,
   festivalDates: humanDates(festival.dates?.start, festival.dates?.end),
   festivalVenue: festival.venue?.name ?? null,
   festivalMarket: festival.venue?.market ?? null,
-  distanceNote: festival.venue?.distance_note ?? null,
-  stages: festival.format?.stages ?? [],
-  audienceLine: festival.audience
-    ? `Primary audience ${festival.audience.primary_age}, ${festival.audience.region}, household income ${festival.audience.household_income}.`
-    : null,
-  offerSheet: rateCard,
+  fitPoint: dossier.outreach?.fit_point ?? null,
   highlightTier,
   callUrl: agencySender.calendly ?? null,
   senderName: agencySender.name ?? null,
@@ -79,7 +87,7 @@ const props = {
   previewText: dossier.outreach?.preview_text ?? null,
 };
 
-const missing = ["companyName", "festivalName", "personalNote", "callUrl", "previewText", "senderName", "senderCompany"]
+const missing = ["companyName", "festivalName", "personalNote", "fitPoint", "callUrl", "previewText", "senderName", "senderCompany"]
   .filter((k) => !props[k]);
 if (!dossier.outreach?.subject) missing.push("subject");
 if (missing.length) {
@@ -89,24 +97,36 @@ if (missing.length) {
 
 const lines = [
   `Hi ${props.greetingName},`, "",
-  `${props.personalNote}${props.reasonSourceUrl ? ` ([source](${props.reasonSourceUrl}))` : ""}`, "",
-  `${props.festivalName} runs ${props.festivalDates} at ${props.festivalVenue} in ${props.festivalMarket}.`,
-  ...(props.distanceNote ? [props.distanceNote] : []),
-  ...(props.stages.length ? [`Stages: ${props.stages.join(", ")}.`] : []),
-  ...(props.audienceLine ? [props.audienceLine] : []), "",
-  ...(props.offerSheet.length ? [
-    "Initial offer sheet:", "",
-    ...props.offerSheet.map((tier) => `- ${tier.tier}: ${tier.range}${tier.includes?.length ? ` (${tier.includes.slice(0, 2).join("; ")})` : ""}${tier.tier === props.highlightTier ? " [suggested]" : ""}`),
-    "", "Ranges come from the sponsorship deck. Packages can be adjusted to your goals.", "",
-  ] : []),
-  `[Book fifteen minutes](${props.callUrl})`, "",
+  props.personalNote, "",
+  `${props.festivalName} takes place ${props.festivalDates} at ${props.festivalVenue} near ${props.festivalMarket}.`,
+  props.fitPoint, "",
+  props.highlightTier
+    ? `We can shape the ${props.highlightTier} package around your goals and how you want ${props.companyName} to show up onsite.`
+    : `We can shape a package around your goals and how you want ${props.companyName} to show up onsite.`,
+  "",
+  `Are you open to a quick call? [Book a time.](${props.callUrl})`, "",
   props.senderName, props.senderCompany, "",
-  `You are receiving this because ${props.companyName} sponsors events in this category. Reply if you do not want further messages.`, "",
 ];
 const markdown = lines.join("\n");
 
+const paragraph = (value) => `<p style="margin:0 0 18px 0;">${escapeHtml(value)}</p>`;
+const gmailHtml = [
+  '<div style="max-width:600px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#202124;">',
+  paragraph(`Hi ${props.greetingName},`),
+  paragraph(props.personalNote),
+  paragraph(`${props.festivalName} takes place ${props.festivalDates} at ${props.festivalVenue} near ${props.festivalMarket}.`),
+  paragraph(props.fitPoint),
+  paragraph(props.highlightTier
+    ? `We can shape the ${props.highlightTier} package around your goals and how you want ${props.companyName} to show up onsite.`
+    : `We can shape a package around your goals and how you want ${props.companyName} to show up onsite.`),
+  `<p style="margin:22px 0;">Are you open to a quick call? <a href="${escapeHtml(props.callUrl)}" style="color:#1a73e8;text-decoration:underline;">Book a time.</a></p>`,
+  `<p style="margin:0 0 18px 0;">${escapeHtml(props.senderName)}<br>${escapeHtml(props.senderCompany)}</p>`,
+  "</div>",
+].join("\n");
+
 await mkdir(resolve("artifacts"), { recursive: true });
 await writeFile(resolve("artifacts/pitch.md"), markdown);
+await writeFile(resolve("artifacts/pitch.gmail.html"), gmailHtml);
 await writeFile(resolve("artifacts/pitch.props.json"), JSON.stringify({
   props, subject: dossier.outreach?.subject ?? null, review_state: "not_required",
   send_state: "ready_to_send", sender_authority: agencySender.authority_state ?? "authorized",
@@ -117,6 +137,7 @@ await writeFile(resolve("artifacts/pitch.props.json"), JSON.stringify({
 const updated = JSON.parse(await readFile(dossierPath, "utf8"));
 updated.outreach = {
   ...updated.outreach, draft_markdown_path: "artifacts/pitch.md",
+  draft_gmail_html_path: "artifacts/pitch.gmail.html",
   review_state: "not_required", send_state: "ready_to_send",
   sender_authority: agencySender.authority_state ?? "authorized",
 };
@@ -133,7 +154,8 @@ if (process.env.ORCHESTRATED === "1") {
   }
 }
 
-console.log(`artifacts/pitch.md  ${markdown.length} bytes`);
+console.log(`artifacts/pitch.md          ${markdown.length} bytes`);
+console.log(`artifacts/pitch.gmail.html  ${gmailHtml.length} bytes`);
 console.log(`subject: ${dossier.outreach?.subject ?? "(unset)"}`);
 console.log("review_state: not_required · send_state: ready_to_send");
-console.log(highlightTier ? `offer sheet: full rate card, ${highlightTier} highlighted` : "offer sheet: full rate card, no tier highlighted");
+console.log(highlightTier ? `offer: ${highlightTier}, shaped to sponsor goals` : "offer: package shaped to sponsor goals");

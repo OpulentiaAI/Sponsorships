@@ -15,6 +15,8 @@
  *   single-ask        the call-to-action line appears other than exactly once
  *   tier-fidelity     a dollar amount that matches no rate-card range
  *   subject-preview   subject or preview empty, or preview repeating the subject
+ *   internal-copy     internal labels, raw evidence fields, or source links leak into the email
+ *   length            the first-touch body exceeds 190 words
  */
 import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
@@ -58,8 +60,30 @@ if (/\b\d{1,3},?\d{3}\s*(attendees|admissions|fans|people)\b/i.test(prose)) {
 }
 
 // ---- single ask -------------------------------------------------------------
-const asks = (text.match(/book fifteen minutes/gi) ?? []).length;
-if (asks !== 1) fail("single-ask", `"Book fifteen minutes" appears ${asks} times; the pitch makes exactly one ask`);
+const asks = (text.match(/are you open to a quick call/gi) ?? []).length;
+if (asks !== 1) fail("single-ask", `"Are you open to a quick call" appears ${asks} times; the pitch makes exactly one ask`);
+const bookingLinks = (text.match(/\[Book a time\.\]\(https:\/\/calendly\.com\/[^)]+\)/gi) ?? []).length;
+if (bookingLinks !== 1) fail("single-ask", `verified Calendly booking link appears ${bookingLinks} times; the pitch includes it once`);
+
+// ---- recipient-facing copy -------------------------------------------------
+for (const pattern of [
+  /draft preview/i,
+  /unsent\s*\/\s*draft for review/i,
+  /initial offer sheet/i,
+  /^stages:/im,
+  /^primary audience:/im,
+  /\[source\]\(/i,
+  /you are receiving this because/i,
+  /reply if you do not want further messages/i,
+]) {
+  if (pattern.test(text)) fail("internal-copy", `recipient-facing draft contains ${pattern}`);
+}
+const bodyWords = text
+  .replace(/https?:\/\/\S+/g, "")
+  .trim()
+  .split(/\s+/)
+  .filter(Boolean).length;
+if (bodyWords > 190) fail("length", `${bodyWords} words; first-touch email must be 190 words or fewer`);
 
 // ---- tier fidelity ----------------------------------------------------------
 // Any dollar figure in the pitch must come from the packet: a rate-card range or the

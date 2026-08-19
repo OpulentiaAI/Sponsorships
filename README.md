@@ -22,12 +22,12 @@ git clone https://github.com/OpulentiaAI/Sponsorships.git \
 node /opulent/workspace/.agents/skills/opulent-sponsor-context-showcase/scripts/brief.mjs
 ```
 
-The brief prints the remaining `node <skill>/scripts/…` commands. Attach `/opulent/workspace/artifacts/` files on `message_user`. Put `CONTEXT_DEV_API_KEY` in Opulent Secrets, never in chat.
+Start by reading the relevant communication knowledge entries. The brief prints the remaining `node <skill>/scripts/…` commands. Attach `/opulent/workspace/artifacts/` files on `message_user`. Put `CONTEXT_DEV_API_KEY` in Opulent Secrets, never in chat.
 
 **Local clone** (this directory is the cwd):
 
 ```bash
-npm run brief                    # workspace + campaign rules; do not open references yet
+npm run brief                    # workspace, knowledge, and campaign rules
 npm run discover -- --mass       # all high similarity events, then title and person routing
 # add --include-national to include national electronic music events
 npm run research -- --target <id>    # gate + 12 concurrent calls + deck read + assemble
@@ -65,7 +65,7 @@ A third rule exists and cannot yet be enforced. Three sponsors were described as
 
 **Package availability.** The decks supply a full rate card — five tiers from Presenting Sponsor at $100K+ down to Sampling Partner at $10K–$25K, extracted with slide citations into the campaign's `deck-facts.md` — so a pitch may name a tier and its published range. What was never supplied is availability: which tiers remain open and what the three in-motion sponsors hold. A pitch therefore never implies a tier is available, and the validator fails any message naming a package that is not a rate-card tier.
 
-**Sending.** Rendering starts from `pending_draft`. A message that passes the automated delivery checks becomes `ready_to_send` with `review_state: not_required`. The workflow sends through an available email channel when it has a recipient route. Missing transport or recipient details are operational limitations, not review holds.
+**Sending.** Drafting starts from `pending_draft`. A message that passes the automated delivery checks becomes `ready_to_send` with `review_state: not_required`. The workflow sends `artifacts/pitch.gmail.html` through the campaign owner's connected Gmail account. `artifacts/pitch.md` remains the authored record. After every send attempt, the workflow appends the result to the relevant knowledge entry without changing earlier content. Missing transport or recipient details are operational limitations, not review holds.
 
 ## The ten required fields
 
@@ -99,7 +99,7 @@ scripts/                          executable workflow, contract tests, optional 
 - Follow a person through more than one employer move.
 - Put a disputed number, an unsupplied package, or an undated claim in a message.
 - Mark a target clear of a rule whose contents nobody has.
-- Send anything.
+- Send sponsor messages through AgentMail.
 
 ## Sources
 

@@ -64,7 +64,9 @@ Bands and their requirements are in `sponsor-fit-and-outreach.md`.
 
 `outreach.package_named` is a rate-card tier verbatim, or null. The rate card is the deck's own (slide 7) and may be shown and named; availability was never supplied and is never implied. The validator checks the tier name on the sponsor record and on every derived message.
 
-A Gmail-ready draft writes `draft_markdown_path` into the dossier, and the packet derives `messages[]` from it — one artifact carries the whole run. Markdown replaces React Email and HTML only; the authorship and evidence contract remains unchanged.
+`outreach.personal_note` is the sponsor-specific opening in Bob's voice and may not copy `reason_to_engage` verbatim. `outreach.fit_point` is one relevant audience or activation sentence chosen for this sponsor. Both are required before delivery.
+
+A draft writes `draft_markdown_path` and `draft_gmail_html_path` into the dossier, and the packet derives `messages[]` from them. Markdown is the authored record. The small inline-styled HTML file is the Gmail transport body. The authorship and evidence contract applies to both.
 
 ## What the validator refuses
 
@@ -85,5 +87,5 @@ The full gather, in default mode (`--partial` skips only this block):
 
 - An open target with `fit.band` or `fit.rationale` unwritten.
 - A `strong` or `plausible` band without its evidence rule met, or without counter-evidence.
-- Missing `reason_to_engage`, `reason_source_url`, `subject`, or `preview_text`.
-- No Markdown draft attached, or a draft path pointing at a file that does not exist.
+- Missing `reason_to_engage`, `reason_source_url`, `personal_note`, `fit_point`, `subject`, or `preview_text`.
+- No Markdown draft or Gmail HTML body attached, or a draft path pointing at a file that does not exist.

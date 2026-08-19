@@ -12,7 +12,7 @@ Contact identity, scheduling link, and send policy live in `sender.json` beside 
 
 The pitch goes out under Bob's name, and his own sample outreach (August 11 mailbox thread, reconstructed in the collection record rather than quoted) sets the register:
 
-It introduces the property in one plain sentence. It offers to adjust a package to the sponsor's brand goals. It asks for a fifteen-minute call. It signs with his name and company.
+It introduces the property in one plain sentence. It offers to adjust a package to the sponsor's brand goals. It asks whether they are open to a quick call and links to his calendar. It signs with his name and company.
 
 That is the whole model. Four moves, no throat-clearing, no enthusiasm performed on the reader's behalf. Thirty years of sponsorship sales sound like someone with nothing to prove, and the draft has to sound like him.
 
@@ -22,7 +22,7 @@ That is the whole model. Four moves, no throat-clearing, no enthusiasm performed
 - One idea per sentence. Facts from the campaign's `deck-facts.md` or the dossier, nothing else.
 - Zone and tier names verbatim from the campaign deck: a named slot at a named stage is checkable; "a great partnership opportunity" is not.
 - The offer move is Bob's: fit the package to their goals, not sell them the biggest tier.
-- One ask, fifteen minutes, his scheduling link. Sign as a person.
+- One ask: "Are you open to a quick call?" Follow it with the verified Calendly link and sign as a person.
 
 ## The machine-checkable half
 

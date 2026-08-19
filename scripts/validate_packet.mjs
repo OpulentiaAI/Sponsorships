@@ -109,10 +109,13 @@ for (const s of packet.sponsors ?? []) {
     }
     check(Boolean(s.outreach?.reason_to_engage), `${id}: reason_to_engage is unwritten`);
     check(Boolean(s.outreach?.reason_source_url), `${id}: reason_to_engage has no source URL`);
+    check(Boolean(s.outreach?.personal_note), `${id}: personal_note is unwritten`);
+    check(Boolean(s.outreach?.fit_point), `${id}: fit_point is unwritten`);
     check(Boolean(s.outreach?.subject), `${id}: subject is unwritten`);
     check(Boolean(s.outreach?.preview_text), `${id}: preview_text is unwritten`);
     check(Boolean(s.outreach?.draft_markdown_path), `${id}: no Markdown draft attached — run npm run email`);
-    for (const key of ["draft_markdown_path"]) {
+    check(Boolean(s.outreach?.draft_gmail_html_path), `${id}: no Gmail HTML body attached — run npm run email`);
+    for (const key of ["draft_markdown_path", "draft_gmail_html_path"]) {
       const p = s.outreach?.[key];
       if (p) check(existsSync(resolve(process.cwd(), p)), `${id}: ${key} points at ${p}, which does not exist`);
     }
@@ -129,7 +132,7 @@ for (const s of packet.sponsors ?? []) {
       `${id}: already_in_motion_state is "clear" while the sponsor_exclusions gate is unresolved — nobody has the list to clear it against`);
   }
 
-  const hasDraft = Boolean(s.outreach?.draft_markdown_path);
+  const hasDraft = Boolean(s.outreach?.draft_markdown_path && s.outreach?.draft_gmail_html_path);
   const sendState = s.outreach?.send_state ?? "pending_draft";
   check(["pending_draft", "ready_to_send"].includes(sendState),
     `${id}: unknown send_state ${sendState}`);

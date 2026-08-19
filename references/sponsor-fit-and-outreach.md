@@ -40,12 +40,13 @@ The reason goes in the recipient's world and stays there. It states what they di
 
 ## The pitch
 
-Four blocks, in order.
+Five short moves, in order.
 
-1. **Their activation.** One or two sentences. Dated, sourced.
-2. **The festival.** Name, dates, venue, market. Facts from the packet.
-3. **Who is on site.** The audience block, verbatim from the packet — ages, region, household income.
-4. **One action.** Fifteen minutes, on the sender's own scheduling link.
+1. **Their activation.** One or two sentences in Bob's voice. Keep the source URL in the dossier rather than the email.
+2. **The festival.** Name, dates, venue, and market in one sentence.
+3. **One useful fit point.** Choose the audience or activation detail that helps this sponsor. Do not dump every field.
+4. **The offer.** Shape a package around the sponsor's goals. Name one exact tier only when it helps.
+5. **One action.** Ask, "Are you open to a quick call?" Follow it with the verified scheduling link.
 
 What stays out:
 
@@ -53,10 +54,12 @@ What stays out:
 - **Any availability claim.** The offer sheet shows the deck's own rate card and may highlight one tier verbatim — that is the client's published price, not ours. Which tiers remain open is unknown, so nothing implies a tier is available or scarce.
 - **Superlatives about the festival.** The first edition earns its record in September; a track record claimed before then invites the one check that finds it missing.
 - **Any implication the sponsor already knows us, or that someone referred us.**
+- **Internal evidence formatting.** Source links, field labels, draft headings, stage inventories, and the full rate card stay in the dossier.
+- **A generic receipt footer.** Do not add "You are receiving this because" or a stock reply-to-opt-out paragraph.
 
 ## House voice
 
-Plain, specific, short. The client's own sample outreach is the register to match: it introduces the event, states the offer, and asks for fifteen minutes. It does not perform enthusiasm.
+Plain, specific, short. The client's own sample outreach is the register to match: it introduces the event, states the offer, and asks for a quick call. It does not perform enthusiasm.
 
 - Second person. Their name, their activation, their category.
 - One idea per sentence.

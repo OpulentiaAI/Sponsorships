@@ -121,5 +121,5 @@ console.log(`     ${target.activation_lead_source ?? "(no lead on this row; find
 console.log(`  2. Fill ${artifactPath("signal.json")} — a date and a verbatim quote, then reason_eligible: true`);
 console.log(`  3. Write judgement into ${artifactPath("dossier.json")} — fit.band, fit.rationale,`);
 console.log("     fit.counter_evidence, outreach.reason_to_engage + reason_source_url,");
-console.log("     outreach.personal_note, package_named, subject, preview_text");
+console.log("     outreach.personal_note, fit_point, package_named, subject, preview_text");
 console.log(`  4. ${nodeScript("deliver.mjs")}`);
