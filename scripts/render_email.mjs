@@ -4,6 +4,11 @@
  *
  * The filename remains stable for existing operators. The output is Markdown, not
  * React Email or HTML. Authorship, evidence, compliance, and send-state gates remain.
+ *
+ * The body is built once as an ordered list of paragraphs, then rendered twice, so the
+ * authored Markdown and the Gmail HTML carry the same words in the same blocks.
+ * The shape follows Bob's own outreach in references/knowledge/agency/writing-samples.md:
+ * their world, the property in one sentence, why them plus one idea, the offer, one ask.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
@@ -36,6 +41,8 @@ const escapeHtml = (value) => String(value ?? "")
   .replaceAll(">", "&gt;")
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#39;");
+
+const lowerFirst = (value) => (value ? value[0].toLowerCase() + value.slice(1) : value);
 
 if (String(dossier.gates?.draft_gate ?? "").startsWith("blocked")) {
   console.error(`Refusing to draft: ${dossier.company} is ${dossier.gates.draft_gate}.`);
@@ -70,24 +77,44 @@ const highlightTier = named && rateCard.some((t) => named.toLowerCase().includes
   ? rateCard.find((t) => named.toLowerCase().includes(t.tier.toLowerCase())).tier
   : null;
 
+// The property sentence is the client's own, from his outreach samples: what it is,
+// when, where, and how far from the city the reader knows.
+const festivalName = festival.event_name ?? null;
+const festivalDates = humanDates(festival.dates?.start, festival.dates?.end);
+const festivalVenue = festival.venue?.name ?? null;
+const festivalMarket = festival.venue?.market ?? null;
+const descriptor = festival.positioning?.descriptor ?? null;
+const placeNote = festival.venue?.distance_note
+  ? lowerFirst(festival.venue.distance_note)
+  : festivalMarket ? `near ${festivalMarket}` : null;
+const propertyLine = festivalName && festivalDates && festivalVenue && placeNote
+  ? (descriptor
+    ? `I'm working on securing sponsors for ${festivalName}, ${descriptor} taking place ${festivalDates} at ${festivalVenue}, ${placeNote}.`
+    : `I'm working on securing sponsors for ${festivalName}, which takes place ${festivalDates} at ${festivalVenue}, ${placeNote}.`)
+  : null;
+
 const props = {
   greetingName,
   companyName: dossier.company ?? null,
   personalNote,
   reasonSourceUrl: reasonUrl ?? null,
-  festivalName: festival.event_name ?? null,
-  festivalDates: humanDates(festival.dates?.start, festival.dates?.end),
-  festivalVenue: festival.venue?.name ?? null,
-  festivalMarket: festival.venue?.market ?? null,
+  festivalName,
+  festivalDates,
+  festivalVenue,
+  festivalMarket,
+  propertyLine,
   fitPoint: dossier.outreach?.fit_point ?? null,
+  activationIdea: dossier.outreach?.activation_idea ?? null,
   highlightTier,
   callUrl: agencySender.calendly ?? null,
   senderName: agencySender.name ?? null,
   senderCompany: agencySender.company ?? null,
+  senderPhone: agencySender.phone ?? null,
   previewText: dossier.outreach?.preview_text ?? null,
 };
 
-const missing = ["companyName", "festivalName", "personalNote", "fitPoint", "callUrl", "previewText", "senderName", "senderCompany"]
+const missing = ["companyName", "festivalName", "personalNote", "propertyLine", "fitPoint",
+  "activationIdea", "callUrl", "previewText", "senderName", "senderCompany"]
   .filter((k) => !props[k]);
 if (!dossier.outreach?.subject) missing.push("subject");
 if (missing.length) {
@@ -95,32 +122,37 @@ if (missing.length) {
   process.exit(2);
 }
 
-const lines = [
-  `Hi ${props.greetingName},`, "",
-  props.personalNote, "",
-  `${props.festivalName} takes place ${props.festivalDates} at ${props.festivalVenue} near ${props.festivalMarket}.`,
-  props.fitPoint, "",
-  props.highlightTier
-    ? `We can shape the ${props.highlightTier} package around your goals and how you want ${props.companyName} to show up onsite.`
-    : `We can shape a package around your goals and how you want ${props.companyName} to show up onsite.`,
-  "",
-  `Are you open to a quick call? [Book a time.](${props.callUrl})`, "",
-  props.senderName, props.senderCompany, "",
-];
-const markdown = lines.join("\n");
+// One ordered body, rendered twice. A paragraph here is a paragraph in both files.
+const offer = props.highlightTier
+  ? `We can shape the ${props.highlightTier} package around your goals and how you want ${props.companyName} to show up onsite.`
+  : `We can shape a package around your goals and how you want ${props.companyName} to show up onsite.`;
+const signature = [props.senderName, props.senderCompany, props.senderPhone].filter(Boolean);
 
-const paragraph = (value) => `<p style="margin:0 0 18px 0;">${escapeHtml(value)}</p>`;
+const blocks = [
+  `Hi ${props.greetingName},`,
+  `${props.personalNote} ${props.propertyLine}`,
+  `${props.fitPoint} ${props.activationIdea}`,
+  offer,
+  { ask: "Are you open to a quick call?", label: "Book a time.", url: props.callUrl },
+  { signature },
+];
+
+const markdown = blocks.map((block) => {
+  if (typeof block === "string") return block;
+  if (block.ask) return `${block.ask} [${block.label}](${block.url})`;
+  return block.signature.join("\n");
+}).join("\n\n") + "\n";
+
 const gmailHtml = [
   '<div style="max-width:600px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.6;color:#202124;">',
-  paragraph(`Hi ${props.greetingName},`),
-  paragraph(props.personalNote),
-  paragraph(`${props.festivalName} takes place ${props.festivalDates} at ${props.festivalVenue} near ${props.festivalMarket}.`),
-  paragraph(props.fitPoint),
-  paragraph(props.highlightTier
-    ? `We can shape the ${props.highlightTier} package around your goals and how you want ${props.companyName} to show up onsite.`
-    : `We can shape a package around your goals and how you want ${props.companyName} to show up onsite.`),
-  `<p style="margin:22px 0;">Are you open to a quick call? <a href="${escapeHtml(props.callUrl)}" style="color:#1a73e8;text-decoration:underline;">Book a time.</a></p>`,
-  `<p style="margin:0 0 18px 0;">${escapeHtml(props.senderName)}<br>${escapeHtml(props.senderCompany)}</p>`,
+  ...blocks.map((block) => {
+    if (typeof block === "string") return `<p style="margin:0 0 18px 0;">${escapeHtml(block)}</p>`;
+    if (block.ask) {
+      return `<p style="margin:22px 0;">${escapeHtml(block.ask)} `
+        + `<a href="${escapeHtml(block.url)}" style="color:#1a73e8;text-decoration:underline;">${escapeHtml(block.label)}</a></p>`;
+    }
+    return `<p style="margin:0 0 18px 0;">${block.signature.map(escapeHtml).join("<br>")}</p>`;
+  }),
   "</div>",
 ].join("\n");
 
@@ -159,3 +191,47 @@ console.log(`artifacts/pitch.gmail.html  ${gmailHtml.length} bytes`);
 console.log(`subject: ${dossier.outreach?.subject ?? "(unset)"}`);
 console.log("review_state: not_required · send_state: ready_to_send");
 console.log(highlightTier ? `offer: ${highlightTier}, shaped to sponsor goals` : "offer: package shaped to sponsor goals");
+
+/* ---- voice check ------------------------------------------------------------
+ * Notes, not gates. lint_pitch.mjs owns what a machine can decide; these are the
+ * judgment calls the coordinator makes before sending, printed where they will be
+ * read. Nothing here changes the exit code.
+ */
+const notes = [];
+const company = String(props.companyName ?? "");
+const zones = [
+  ...(festival.format?.zones ?? []).map((s) => String(s)),
+  ...(festival.format?.stages ?? []).map((s) => String(s)),
+  ...(festival.format?.elements ?? []).map((s) => String(s)),
+  ...rateCard.map((t) => String(t.tier)),
+];
+const opener = String(props.personalNote);
+if (!/\b(I|I'm|I've|my|we|our)\b/.test(opener)) {
+  notes.push("the opening has no first-person voice. Bob writes \"I saw\", \"I'm working on\", \"I think\".");
+}
+if (company && opener.trimStart().toLowerCase().startsWith(company.toLowerCase())) {
+  notes.push(`the opening starts by describing ${company} to ${company}. Lead with what he saw and why he is writing.`);
+}
+const idea = String(props.activationIdea);
+if (!zones.some((zone) => zone && idea.toLowerCase().includes(zone.toLowerCase()))) {
+  notes.push("the activation idea names no zone, element, or tier from the deck. A concept nobody can picture is not an idea.");
+}
+if (company && !`${props.fitPoint} ${idea}`.includes(company)) {
+  notes.push(`neither the fit point nor the idea names ${company}. Swap the company for another target: would the email change?`);
+}
+// The greeting and the signature are fixed; only the four body paragraphs are the writing.
+const bodyWords = blocks
+  .slice(1, -1)
+  .map((block) => (typeof block === "string" ? block : block.ask))
+  .join(" ")
+  .replace(/https?:\/\/\S+/g, "")
+  .trim().split(/\s+/).filter(Boolean).length;
+if (bodyWords > 150) {
+  notes.push(`${bodyWords} words of body. Both of Bob's samples run near 100, and lint fails above 190.`);
+}
+
+console.log("");
+console.log("voice check (notes, not gates. references/content-editing.md carries the passes)");
+for (const note of notes) console.log(`  · ${note}`);
+console.log("  · read the first line aloud on its own. Does it sound like Bob, and does it earn the second?");
+console.log("  · confirm knowledge/agency/writing-samples.md was read before this draft, not after.");

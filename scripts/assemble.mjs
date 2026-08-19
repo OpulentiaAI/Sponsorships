@@ -348,4 +348,6 @@ console.log(`artifacts/packet.json   ${packet.context_operations.length} operati
 if (dossier.gates.draft_gate === "blocked_compliance") {
   console.log(`\ndraft gate: BLOCKED — ${dossier.gates.draft_gate_reason}`);
 }
-console.log("Still yours to write: fit.band, fit.rationale, outreach.reason_to_engage, subject, preview_text.");
+console.log("Still yours to write: fit.band, fit.rationale, outreach.reason_to_engage,");
+console.log("  personal_note, fit_point, activation_idea, subject, preview_text.");
+console.log("  Read references/knowledge/agency/writing-samples.md before drafting.");

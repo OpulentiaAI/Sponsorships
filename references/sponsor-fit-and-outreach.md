@@ -40,13 +40,22 @@ The reason goes in the recipient's world and stays there. It states what they di
 
 ## The pitch
 
-Five short moves, in order.
+Five short moves, in order. Bob's own two emails are in
+`knowledge/agency/writing-samples.md`; read them before writing any of this.
 
-1. **Their activation.** One or two sentences in Bob's voice. Keep the source URL in the dossier rather than the email.
-2. **The festival.** Name, dates, venue, and market in one sentence.
-3. **One useful fit point.** Choose the audience or activation detail that helps this sponsor. Do not dump every field.
-4. **The offer.** Shape a package around the sponsor's goals. Name one exact tier only when it helps.
-5. **One action.** Ask, "Are you open to a quick call?" Follow it with the verified scheduling link.
+1. **Their activation, in his voice.** First person: what he saw and why it made him write.
+   `outreach.personal_note`. Keep the source URL in the dossier rather than the email.
+2. **The property.** Name, what it is, when, where, and how far from the city they know, in one
+   sentence. The campaign packet's `positioning.descriptor` carries the client's own wording.
+3. **One useful fit point.** `outreach.fit_point`. Choose the audience or category overlap that
+   belongs to this sponsor. Do not dump every field.
+4. **One activation idea.** `outreach.activation_idea`. Not a logo: one concrete part of the
+   weekend they could own, named from the deck's zones, elements, or tiers, and connected to what
+   the brand sells. Both samples make this move, and it is the one that turns an email about a
+   festival into an email about the recipient.
+5. **The offer and the ask.** Shape a package around their goals, naming one exact tier only when
+   it helps. Then ask, "Are you open to a quick call?" and follow it with the verified scheduling
+   link.
 
 What stays out:
 
@@ -59,15 +68,18 @@ What stays out:
 
 ## House voice
 
-Plain, specific, short. The client's own sample outreach is the register to match: it introduces the event, states the offer, and asks for a quick call. It does not perform enthusiasm.
+Plain, specific, short. The client's own cold emails in `knowledge/agency/writing-samples.md` are the register to match: he says what he is doing, introduces the event, offers one idea, and asks for a quick call. He does not perform enthusiasm.
 
-- Second person. Their name, their activation, their category.
+- First person for him, second person for them. He writes "I saw" and "I'm working on"; the email is about their name, their activation, their category.
 - One idea per sentence.
 - Numbers over adjectives, but only numbers the packet supports.
 - No em dashes, no "excited to," no "I hope this finds you well," no "reaching out."
 - Subject and preview text written last, together, and the preview extends the subject rather than repeating it.
 
 Full word-level rules are in `writing-quality.md`, and both swap tables are vendored beside it.
+`email-style.md` covers the subject, the preview, and how the mail reads in an inbox.
+`email-adaptation.md` covers what survives the trip from deck to email. `content-editing.md`
+covers the grounding to do before drafting and the passes to run before the send.
 
 ## Sending
 

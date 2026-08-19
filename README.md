@@ -2,7 +2,7 @@
 
 A skill for Opulent, built for Trifecta Marketing, Bob Dittrich's sponsorship sales agency. It searches every event that closely matches the campaign, maps the sponsors that fit Bob's category profile, and keeps only sponsorship evidence from the past year. It uses the quoted sponsorship owner's title to find comparable people at each sponsor. It resolves a person only after it retrieves an exact LinkedIn profile. Nocturnal Valley is the sample campaign. Everything about that property lives under `references/campaigns/nocturnal-valley/` and can be replaced for another engagement.
 
-This repository is the skill package: `SKILL.md` at the root, then `references/` and `scripts/` only. `references/knowledge/agency/` carries Trifecta's identity and register, and `references/campaigns/nocturnal-valley/` carries that property's decks bit-for-bit with their claims extracted and cited, because outreach authors from them. It gathers no third-party data at rest — run artifacts stay out of git, and the templates are empty on purpose.
+This repository is the skill package: `SKILL.md` at the root, then `references/` and `scripts/` only. `references/knowledge/agency/` carries Trifecta's identity and register, including Bob's own two cold emails preserved verbatim in `writing-samples.md`, and `references/campaigns/nocturnal-valley/` carries that property's decks bit-for-bit with their claims extracted and cited, because outreach authors from them. It gathers no third-party data at rest — run artifacts stay out of git, and the templates are empty on purpose.
 
 ## What it does
 
@@ -67,6 +67,16 @@ A third rule exists and cannot yet be enforced. Three sponsors were described as
 
 **Sending.** Drafting starts from `pending_draft`. A message that passes the automated delivery checks becomes `ready_to_send` with `review_state: not_required`. The workflow sends `artifacts/pitch.gmail.html` through the campaign owner's connected Gmail account. `artifacts/pitch.md` remains the authored record. After every send attempt, the workflow appends the result to the relevant knowledge entry without changing earlier content. Missing transport or recipient details are operational limitations, not review holds.
 
+## How the email is written
+
+The pitch is Bob's, in five moves: what he saw the sponsor do and why he is writing, the property in one sentence in his own words, why this sponsor and this audience, one concrete thing they could own onsite, then one ask and the verified scheduling link. `outreach.personal_note`, `fit_point`, and `activation_idea` carry moves one, three, and four, and all three are required and specific to the sponsor. An email that would read the same for another name on the list is not finished.
+
+Two of Bob's own cold emails are stored exactly as he supplied them in `references/knowledge/agency/writing-samples.md`, and a contract test holds their bytes so a later editing pass cannot quietly normalize his punctuation. They set the register and they are not a source to copy from: "reaching out" opens one of them and is still on the agency banned list, the em dash in the other still fails lint, and the artists one of them names appear in no deck and cannot be claimed. The file marks each where it appears.
+
+Four references carry the craft, three of them adapted from the subagent skills in [vercel-labs/marketing-team-eve-template](https://github.com/vercel-labs/marketing-team-eve-template): `writing-quality.md` for the word-level rules, `email-style.md` for how the mail reads in an inbox, `email-adaptation.md` for what survives the trip from deck to email, and `content-editing.md` for the grounding before drafting and the passes before the send.
+
+The split between machine and judgment is deliberate. `scripts/lint_pitch.mjs` enforces the banned lists, the em-dash ban, the no-attendance rule, the single ask, tier fidelity, and the length ceiling. Everything about the register is the coordinator's call, made before drafting and again before sending against the checks in SKILL.md. `render_email.mjs` prints a short voice check after each draft: notes to act on, never a gate.
+
 ## The ten required fields
 
 Every sponsor carries all ten, whatever the outcome: category fit, activation history, audience overlap, regional presence, budget signal, decision maker, decision maker title, contact route, compliance flags, and changes since last. Each ships with its own state, so a gap always says which kind of gap it is — the envelope rules are in `references/sponsor-dossier-contract.md`.
@@ -77,7 +87,11 @@ Every sponsor carries all ten, whatever the outcome: category fit, activation hi
 SKILL.md                          discoverable agent entrypoint (this directory is the skill)
 references/                       disclosed contracts plus campaign, agency, and templates
   writing, dossier, evidence md   load on the trigger named in SKILL.md
+  email-style.md                  subject and preview, front-loading, one ask
+  email-adaptation.md             what survives the trip from deck to email
+  content-editing.md              ground the draft, then edit it in passes
   knowledge/agency/               Trifecta Marketing: profile, register, sender.json, house bans
+    writing-samples.md            Bob's own two cold emails, stored exactly as supplied
   campaigns/nocturnal-valley/     the sample campaign, swappable per engagement
     sources/                      the property's decks, bit-for-bit, checksummed
     deck-facts.md                 every deck claim with its slide citation
@@ -103,6 +117,6 @@ scripts/                          executable workflow, contract tests, optional 
 
 ## Sources
 
-The festival facts, the target list, and the exclusion flag come from the client's own materials: a 15-page sponsorship deck, a 9-slide revision, a 25-company list, a sample outreach email, and the meeting note. The original list is preserved separately in `references/campaigns/nocturnal-valley/client-targets-25.csv`; the working `targets.csv` adds seven approved vodka and tequila targets. Each field in the campaign's `festival-packet.json` names which one it came from.
+The festival facts, the target list, and the exclusion flag come from the client's own materials: a 15-page sponsorship deck, a 9-slide revision, a 25-company list, his own cold outreach emails (preserved verbatim in `references/knowledge/agency/writing-samples.md`), and the meeting note. The original list is preserved separately in `references/campaigns/nocturnal-valley/client-targets-25.csv`; the working `targets.csv` adds seven approved vodka and tequila targets. Each field in the campaign's `festival-packet.json` names which one it came from.
 
 Client-supplied is not verified. It carries the same envelope as anything else.

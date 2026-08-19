@@ -28,3 +28,7 @@ The evidence discipline and the writing discipline are the same discipline point
 
 - `ai-phrases-to-avoid.md` — the words, phrases, and punctuation patterns that mark text as generated, each with a replacement.
 - `plain-english-alternatives.md` — the A-to-Z swap table for corporate, padded, or vague wording.
+- `email-style.md` — what changes when the prose has to survive an inbox: the subject and preview pair, front-loading, one ask.
+- `email-adaptation.md` — what to cut and what to add when deck and dossier material becomes an email.
+- `content-editing.md` — the grounding to do before drafting and the editing passes to run before the send.
+- `knowledge/agency/writing-samples.md` — the client's own two cold emails, verbatim. The register these rules are trimming noise around.

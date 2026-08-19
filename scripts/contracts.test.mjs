@@ -47,12 +47,14 @@ test("the skill has one discoverable root and only references and scripts beneat
   assert.match(nestedSkill, /^---\nname: opulent-sponsor-context-showcase\ndescription: \|\n/);
   assert.match(nestedSkill, /Sponsor discovery and outreach for festival campaigns\./);
   assert.match(nestedSkill, /\nlicense: MIT\nallowed-tools: Bash/);
-  assert.match(nestedSkill, /\nmetadata:\n  author: opulent\n  version: "0\.4\.0"\n---\n/);
+  assert.match(nestedSkill, /\nmetadata:\n  author: opulent\n  version: "0\.5\.0"\n---\n/);
   assert.doesNotMatch(nestedSkill, /disable-model-invocation:/);
   for (const file of [
-    "contextdev-capabilities.md", "dashboard-brief.md", "evidence-policy.md",
+    "contextdev-capabilities.md", "content-editing.md", "dashboard-brief.md",
+    "email-adaptation.md", "email-style.md", "evidence-policy.md",
     "monid-capabilities.md", "scenarios.jsonl", "sponsor-dossier-contract.md",
     "sponsor-fit-and-outreach.md", "writing-quality.md",
+    "knowledge/agency/writing-samples.md",
   ]) assert.equal(existsSync(resolve(skillDir, "references", file)), true, `${file} is missing`);
   assert.equal(existsSync(resolve(scriptDir, "brief.mjs")), true);
 });
@@ -268,8 +270,9 @@ test("the real draft path writes and lints Gmail-ready Markdown with authorship 
     ...dossier.outreach,
     reason_to_engage: "Acme sampled at a comparable festival in July 2026.",
     reason_source_url: "https://example.com/acme-activation",
-    personal_note: "Acme sampled at a comparable festival in July 2026. Nocturnal Valley offers a similar multi-day setting.",
+    personal_note: "I saw Acme sampling at a comparable festival in July, so I wanted to put a Midwest weekend in front of you.",
     fit_point: "The Midwest audience gives Acme a relevant place to meet festival fans onsite.",
+    activation_idea: "Rather than a logo placement, Acme could take the Sampling Activations zone for the three nights.",
     package_named: "Sampling Partner",
     subject: "Sampling at Nocturnal Valley",
     preview_text: "Three nights near St. Louis in September",
@@ -287,9 +290,21 @@ test("the real draft path writes and lints Gmail-ready Markdown with authorship 
   const updated = JSON.parse(readFileSync(join(dir, "artifacts/dossier.json"), "utf8"));
   assert.match(markdown, /^Hi Acme team,/);
   assert.doesNotMatch(markdown, /\[source\]|Initial offer sheet|Stages:|Primary audience:/);
+  // Bob's five moves, in his order: his opening, the property in his own words, why them
+  // plus one idea, the offer, one ask, then a signature with his direct line.
+  assert.match(markdown, /^I saw Acme sampling at a comparable festival in July/m);
+  assert.match(markdown, /I'm working on securing sponsors for Nocturnal Valley, a new three-night music, arts and camping festival taking place September 24 to 26, 2026 at Astral Valley Art Park, about 45 minutes south of St\. Louis\./);
+  assert.match(markdown, /Rather than a logo placement, Acme could take the Sampling Activations zone/);
   assert.match(markdown, /We can shape the Sampling Partner package around your goals/);
   assert.match(markdown, /Are you open to a quick call\? \[Book a time\.\]\(https:\/\/calendly\.com\/robertdittrich48\/30min\)/);
   assert.equal((markdown.match(/Are you open to a quick call/g) ?? []).length, 1);
+  assert.match(markdown, /Robert Dittrich\nTrifecta Marketing\n773\.706\.4860/);
+  // One authored body rendered twice: the Markdown paragraphs and the HTML paragraphs
+  // carry the same words in the same order.
+  const mdParas = markdown.trim().split(/\n\n+/).map((p) => p.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\s+/g, " ").trim());
+  const htmlParas = [...gmailHtml.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)]
+    .map((m) => m[1].replace(/<br>/g, " ").replace(/<[^>]+>/g, "").replaceAll("&#39;", "'").replace(/\s+/g, " ").trim());
+  assert.deepEqual(htmlParas, mdParas);
   assert.match(gmailHtml, /font-family:Arial,Helvetica,sans-serif/);
   assert.match(gmailHtml, /Are you open to a quick call\?/);
   assert.match(gmailHtml, /href="https:\/\/calendly\.com\/robertdittrich48\/30min"/);
@@ -337,6 +352,87 @@ test("sender authority permits validated outreach without review, and the sender
   assert.equal(agencySender.authority_state, "authorized");
   assert.equal(agencySender.company, "Trifecta Marketing");
   assert.ok(!("sender" in festival), "the campaign packet carries the property, never the sender");
+});
+
+/* ---------------- the client's own writing ---------------- */
+
+// Bob's two cold emails are the register every draft is written in, and they are stored
+// exactly as he supplied them. The bytes below are the canonical copy: an editing pass
+// that "fixes" his em dash, his en dashes, or his curly apostrophes has changed the
+// evidence rather than improved it, and this test is what catches that.
+const SAMPLE_1 = [
+  "I’m working on securing sponsors for Nocturnal Valley, a new three-night music, arts and camping festival taking place September 24–26 at Astral Valley Art Park, approximately 45 minutes south of St. Louis.",
+  "Nocturnal Valley will bring a highly engaged electronic-music audience together for three stages, camping, wellness programming, art and community experiences.",
+  "Rather than a standard logo sponsorship, I see an opportunity for [Brand] to own a useful part of the attendee experience—such as [the hydration station/campground charging hub/recovery area/VIP lounge].",
+  "Would you have 15 minutes next week to discuss the audience, available assets and a concept tailored to [Brand]?",
+  "--",
+  "Bob Dittrich",
+  "773.706.4860",
+  "Book a :30 min meeting with me",
+  "https://calendly.com/robertdittrich48/30min",
+].join("\n");
+
+const SAMPLE_2 = [
+  "I’m reaching out on behalf of Nocturnal Valley, a new three-day music, arts and camping festival taking place September 24–26 at Astral Valley Art Park, just outside St. Louis.",
+  "The festival will bring together a highly engaged electronic-music audience for three stages, immersive art, wellness programming, camping and community experiences. The lineup includes Daily Bread, G Jones, PEEKABOO, Skream, Caspa and more.",
+  "I believe [Brand] could be a strong fit, particularly through an experiential activation that enhances the attendee experience rather than simply providing logo exposure.",
+  "Would you have 15 minutes this week to learn more? I’d be happy to send the sponsorship deck and share a few activation ideas tailored to [Brand].",
+  "--",
+  "Bob Dittrich",
+  "773.706.4860",
+  "Book a :30 min meeting with me",
+  "https://calendly.com/robertdittrich48/30min",
+].join("\n");
+
+test("the client's outreach samples are stored exactly as supplied", async () => {
+  const samples = await readFile(resolve(agencyDir(), "writing-samples.md"), "utf8");
+  assert.ok(samples.includes(SAMPLE_1), "sample 1 is not stored verbatim");
+  assert.ok(samples.includes(SAMPLE_2), "sample 2 is not stored verbatim");
+  assert.ok(samples.includes("```\n" + SAMPLE_1 + "\n```"), "sample 1 is not fenced intact");
+  assert.ok(samples.includes("```\n" + SAMPLE_2 + "\n```"), "sample 2 is not fenced intact");
+});
+
+test("the samples carry the three things that do not transfer into a draft", async () => {
+  const samples = await readFile(resolve(agencyDir(), "writing-samples.md"), "utf8");
+  const house = JSON.parse(await readFile(resolve(agencyDir(), "banned-phrases.json"), "utf8"));
+  // The sample opens with a phrase the agency bans, contains an em dash the lint fails on,
+  // and names artists no deck supplies. Each has to be marked where a drafter will see it.
+  assert.ok(house.house.includes("reaching out"));
+  assert.match(samples, /banned list|banned-phrases\.json/);
+  assert.match(samples, /em dash/i);
+  assert.match(samples, /Daily Bread, G Jones, PEEKABOO, Skream, or Caspa/);
+  assert.match(samples, /preserved as received|preserved intact/i);
+  assert.match(samples, /the `I` is restored|The `I` is restored/);
+});
+
+test("the voice branch of references is present and cross-linked", async () => {
+  for (const [file, marker] of [
+    ["email-style.md", /Subject and preview text/],
+    ["email-adaptation.md", /The five moves/],
+    ["content-editing.md", /Ground the draft before writing it/],
+  ]) {
+    const text = await readFile(resolve(SKILL_ROOT, "references", file), "utf8");
+    assert.match(text, marker, `${file} lost its section`);
+    assert.match(text, /vercel-labs\/marketing-team-eve-template/, `${file} drops its provenance`);
+  }
+  const quality = await readFile(resolve(SKILL_ROOT, "references/writing-quality.md"), "utf8");
+  for (const name of ["email-style.md", "email-adaptation.md", "content-editing.md", "writing-samples.md"]) {
+    assert.ok(quality.includes(name), `writing-quality.md does not point at ${name}`);
+  }
+});
+
+test("SKILL.md sends the coordinator to the samples before drafting, and checks the draft after", () => {
+  assert.match(nestedSkill, /### Read the voice before you write a word/);
+  assert.match(nestedSkill, /Open these before drafting, not after a draft reads wrong/);
+  assert.match(nestedSkill, /references\/knowledge\/agency\/writing-samples\.md/);
+  assert.match(nestedSkill, /`references\/email-style\.md`, `references\/email-adaptation\.md`, and\n {3}`references\/content-editing\.md`/);
+  assert.match(nestedSkill, /### Check the draft against the samples/);
+  assert.match(nestedSkill, /This is judgment, not a validator/);
+  assert.match(nestedSkill, /Read the first line aloud on its own/);
+  assert.match(nestedSkill, /Swap the company name for another target on the list/);
+  assert.match(nestedSkill, /Write `outreach\.activation_idea`/);
+  assert.match(nestedSkill, /`fit_point` and\n`activation_idea` are required and specific to this sponsor/);
+  assert.match(nestedSkill, /nothing about the register is enforced by a validator/);
 });
 
 /* ---------------- the target loader ---------------- */
@@ -523,6 +619,7 @@ function sendReadyPacket(reviewState = "not_required") {
       reason_source_url: "https://example.com/acme-activation",
       personal_note: "I saw Acme at a comparable event in July.",
       fit_point: "The Midwest audience is a relevant match for Acme.",
+      activation_idea: "Acme could take the Sampling Activations zone for the three nights.",
       subject: "Nocturnal Valley sponsorship",
       preview_text: "A September festival partnership in the St. Louis market.",
       draft_markdown_path: "pitch.md",
@@ -555,6 +652,16 @@ test("a Markdown message cannot retain a review hold", () => {
   const result = validateRun(file, dir);
   assert.equal(result.code, 1);
   assert.match(result.out, /must not carry a review hold/);
+});
+
+test("a send-ready message with no activation idea is refused by name", () => {
+  const { dir, file } = sendReadyPacket();
+  const packet = JSON.parse(readFileSync(file, "utf8"));
+  delete packet.sponsors[0].outreach.activation_idea;
+  writeFileSync(file, JSON.stringify(packet));
+  const result = validateRun(file, dir);
+  assert.equal(result.code, 1);
+  assert.match(result.out, /activation_idea is unwritten/);
 });
 
 test("a strong band without its evidence is refused by name", () => {

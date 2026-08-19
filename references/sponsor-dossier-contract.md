@@ -64,7 +64,7 @@ Bands and their requirements are in `sponsor-fit-and-outreach.md`.
 
 `outreach.package_named` is a rate-card tier verbatim, or null. The rate card is the deck's own (slide 7) and may be shown and named; availability was never supplied and is never implied. The validator checks the tier name on the sponsor record and on every derived message.
 
-`outreach.personal_note` is the sponsor-specific opening in Bob's voice and may not copy `reason_to_engage` verbatim. `outreach.fit_point` is one relevant audience or activation sentence chosen for this sponsor. Both are required before delivery.
+`outreach.personal_note` is the sponsor-specific opening in Bob's voice, written in the first person, and may not copy `reason_to_engage` verbatim. `outreach.fit_point` is one relevant audience or category sentence chosen for this sponsor. `outreach.activation_idea` is one concrete thing this sponsor could own onsite, named from the campaign's zones, elements, or tiers. All three are required before delivery, and all three are sponsor-specific: a draft that would read the same for another target on the list has not written them.
 
 A draft writes `draft_markdown_path` and `draft_gmail_html_path` into the dossier, and the packet derives `messages[]` from them. Markdown is the authored record. The small inline-styled HTML file is the Gmail transport body. The authorship and evidence contract applies to both.
 
@@ -87,5 +87,5 @@ The full gather, in default mode (`--partial` skips only this block):
 
 - An open target with `fit.band` or `fit.rationale` unwritten.
 - A `strong` or `plausible` band without its evidence rule met, or without counter-evidence.
-- Missing `reason_to_engage`, `reason_source_url`, `personal_note`, `fit_point`, `subject`, or `preview_text`.
+- Missing `reason_to_engage`, `reason_source_url`, `personal_note`, `fit_point`, `activation_idea`, `subject`, or `preview_text`.
 - No Markdown draft or Gmail HTML body attached, or a draft path pointing at a file that does not exist.

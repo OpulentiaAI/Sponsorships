@@ -111,6 +111,7 @@ for (const s of packet.sponsors ?? []) {
     check(Boolean(s.outreach?.reason_source_url), `${id}: reason_to_engage has no source URL`);
     check(Boolean(s.outreach?.personal_note), `${id}: personal_note is unwritten`);
     check(Boolean(s.outreach?.fit_point), `${id}: fit_point is unwritten`);
+    check(Boolean(s.outreach?.activation_idea), `${id}: activation_idea is unwritten — the pitch names one thing this sponsor could own onsite`);
     check(Boolean(s.outreach?.subject), `${id}: subject is unwritten`);
     check(Boolean(s.outreach?.preview_text), `${id}: preview_text is unwritten`);
     check(Boolean(s.outreach?.draft_markdown_path), `${id}: no Markdown draft attached — run npm run email`);

@@ -11,7 +11,7 @@ license: MIT
 allowed-tools: Bash
 metadata:
   author: opulent
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # Opulent sponsor context
@@ -40,7 +40,7 @@ sample. When several campaigns exist, pass `--campaign <key>`.
 4. Keep the shell at `/opulent/workspace`. Do not `cd` into the skill. Artifacts belong in the workspace, not inside the installed package.
 5. Run with `bash_run` and a full literal path (not `~`, `$HOME`, or `npm run` against the workspace `package.json`):
    `node /opulent/workspace/.agents/skills/opulent-sponsor-context-showcase/scripts/brief.mjs`
-6. Follow the brief's NEXT lines. Open the communication and voice references before writing outreach. Open other references only when their trigger below fires.
+6. Follow the brief's NEXT lines. Read `references/knowledge/agency/writing-samples.md` and the rest of the voice branch before writing any outreach, not after a draft reads wrong. Open other references only when their trigger below fires.
 7. Never pause or block the run for authentication. Do not request an interactive Gmail or provider authorization checkpoint. Continue every available step end to end, record unavailable credentials or transport as operational blockers, and state those blockers only in the final `message_user` and the single AgentMail delivery report.
 8. For mass discovery or a multi-target run: `document_manage(action="read")` at start, create once if absent, append at each phase.
 9. After delivery passes, send `artifacts/pitch.gmail.html` as the Gmail HTML body through the campaign owner's connected Gmail account. Do not paste `pitch.md`, Markdown syntax, source links, draft labels, or review labels into Gmail. AgentMail is not a valid sponsor transport. If Gmail is unavailable, continue the run, attach `/opulent/workspace/artifacts/packet.json`, `pitch.md`, and `pitch.gmail.html` on the final `message_user`, and record the transport blocker there and in the single AgentMail report.
@@ -82,15 +82,62 @@ Done means the cohort counts are printed, every call has a terminal state, and t
 
 Read `artifacts/signal.json` and `artifacts/dossier.json`.
 
+### Read the voice before you write a word
+
+Open these before drafting, not after a draft reads wrong. A draft written from memory of
+them and corrected afterwards keeps the shape it was born with.
+
+1. The stored knowledge entries for this campaign, sponsor, and any prior thread.
+2. `references/knowledge/agency/writing-samples.md` — Bob's own two cold emails, verbatim.
+   This is the register. Read it every run.
+3. `references/knowledge/agency/trifecta-profile.md` — who he is and the moves he makes.
+4. `references/email-style.md`, `references/email-adaptation.md`, and
+   `references/content-editing.md` — how the mail works in an inbox, what survives the trip
+   from deck to email, and the editing passes.
+5. `references/writing-quality.md` — the word-level rules.
+
+The samples are the client's own writing and are preserved intact, so three things in them
+do not transfer: "reaching out" is on the agency banned list, the em dash fails lint, and
+the artists named in sample 2 appear in no deck and cannot be claimed. `writing-samples.md`
+says so where they appear.
+
+### Fill the fields
+
 - Fill the signal from one dated activation page with a quote and source URL.
 - Write `fit.band`, `rationale`, and `counter_evidence` from retrieved evidence.
 - Write one dated `outreach.reason_to_engage` with its source URL.
-- Write `outreach.personal_note` in Trifecta's register after reading the stored communication entries and `references/knowledge/agency/trifecta-profile.md`. Do not copy the research finding or its source wording into this field.
-- Write one sponsor-specific `outreach.fit_point` from the dossier or campaign facts. Choose the audience or activation detail that helps this recipient. Do not paste a standard audience line into every email.
+- Write `outreach.personal_note` in Bob's register: first person, conversational, what he
+  saw and why that made him write this week. Do not copy the research finding or its source
+  wording into this field, and do not read a dossier sentence back to its own subject.
+- Write one sponsor-specific `outreach.fit_point` from the dossier or campaign facts. Choose
+  the audience or activation detail that helps this recipient. Do not paste a standard
+  audience line into every email.
+- Write `outreach.activation_idea`: one concrete thing this sponsor could own onsite, named
+  from the campaign's zones, elements, or tiers, and connected to what the brand actually
+  sells. This is the move both samples make, and it is the one a generated draft drops.
 - Name a rate-card tier verbatim or leave it empty. Treat availability as unknown.
-- Write the subject and preview text last.
+- Write the subject and preview text last, together, as one unit.
 
-Done means the signal is eligible and the judgement fields are complete at the strength of the evidence. `personal_note` is required and differs from `reason_to_engage`. `fit_point` is required and specific to this sponsor.
+### Check the draft against the samples
+
+This is judgment, not a validator. `scripts/lint_pitch.mjs` owns what a machine can decide;
+the coordinator owns the rest and makes these calls before the send.
+
+- Read the first line aloud on its own. Does it sound like a person talking, and does it earn
+  the second line?
+- Swap the company name for another target on the list. If nothing else would have to change,
+  the draft is a template and the fit point and idea have not done their work.
+- Does every claim trace to the dossier, `deck-facts.md`, or the packet? Did any hedge go flat
+  between the dossier and the draft?
+- Read the subject and preview together, at truncation length, as one row in an inbox.
+
+`references/content-editing.md` carries the full passes and the pre-send checklist.
+`render_email.mjs` prints a short voice check after each draft; those are notes to act on,
+not gates that stopped anything.
+
+Done means the signal is eligible and the judgement fields are complete at the strength of the
+evidence. `personal_note` is required and differs from `reason_to_engage`. `fit_point` and
+`activation_idea` are required and specific to this sponsor.
 
 ## 4. Deliver send-ready outreach
 
@@ -100,7 +147,9 @@ node /opulent/workspace/.agents/skills/opulent-sponsor-context-showcase/scripts/
 
 Add `--dashboard` when the optional run summary is useful.
 
-Delivery assembles the dossier, writes the canonical Markdown draft and Gmail HTML body, lints the prose, attaches both files to the packet, and validates the full contract. The email reads as a short note from Bob. It starts with the sponsor's relevant activity, introduces the property in one sentence, gives one relevant audience or activation point, offers to shape a package around the sponsor's goals, and closes with "Are you open to a quick call?" plus the verified scheduling link. Keep source URLs, field labels, stage lists, the full rate card, internal draft text, and generic receipt or opt-out footers in the dossier rather than the email.
+Delivery assembles the dossier, writes the canonical Markdown draft and Gmail HTML body, lints the prose, attaches both files to the packet, and validates the full contract. The Markdown and the HTML are rendered from one ordered body, so they carry the same words in the same paragraphs.
+
+The email reads as a short note from Bob, in five moves: what he saw the sponsor do and why he is writing, the property in one sentence in his own words, why this sponsor and this audience, one concrete idea they could own onsite, and one ask. It closes with "Are you open to a quick call?" plus the verified scheduling link, and signs with his name, company, and direct line. Keep source URLs, field labels, stage lists, the full rate card, internal draft text, and generic receipt or opt-out footers in the dossier rather than the email.
 
 Done means lint exits 0, full validation exits 0, and `packet.messages[]` carries both `draft_markdown_path` and `draft_gmail_html_path` with `send_state: ready_to_send` and `review_state: not_required`. Send the HTML body through the campaign owner's connected Gmail account without pausing for review or authentication. If no recipient route or connected Gmail account is available, continue all other work and name the operational limitation only in the final `message_user` and single AgentMail report.
 
@@ -137,7 +186,10 @@ Done means exactly one report email covers every send attempt in the run and Age
 - The authored Markdown draft and its Gmail HTML transport body are the deliverables. Preserve every authorship mandate without adding a React Email template.
 - The authored Markdown is the source of truth. Gmail receives the generated `pitch.gmail.html` body with simple inline styling.
 - The sponsor email contains no source URLs, Markdown syntax, internal labels, full rate card, raw evidence fields, or generic "You are receiving this because" footer.
-- Read stored communication knowledge before drafting. Append send history after every attempt and preserve all prior entry content.
+- Read stored communication knowledge and `knowledge/agency/writing-samples.md` before drafting. Append send history after every attempt and preserve all prior entry content.
+- The samples are preserved exactly as the client supplied them. They set the register; they are not lint-exempt copy, and a banned phrase, an em dash, or an unsourced claim inside one still fails in a draft.
+- Every draft carries a sponsor-specific `personal_note`, `fit_point`, and `activation_idea`. An email that would read the same for another target on the list is not finished.
+- The voice check before the send is the coordinator's judgment. Lint covers what a machine can decide, and nothing about the register is enforced by a validator.
 - A Markdown message that passes delivery is ready to send. No separate review, approval, or authentication pause applies.
 - Sponsor messages use the campaign owner's connected Gmail account. AgentMail is excluded from sponsor delivery.
 - Each run sends one consolidated deliverability report to the user through AgentMail.
@@ -150,7 +202,10 @@ Open only the branch needed for the current step. Paths are relative to this ski
 
 | Trigger | Reference |
 | --- | --- |
-| Write outreach prose | `references/knowledge/agency/trifecta-profile.md` and `references/writing-quality.md` |
+| Write outreach prose | `references/knowledge/agency/writing-samples.md`, `references/knowledge/agency/trifecta-profile.md`, and `references/writing-quality.md` |
+| Write the subject, the preview, or the Gmail body | `references/email-style.md` |
+| Turn dossier or deck material into email copy | `references/email-adaptation.md` |
+| Ground a draft before writing, or edit one before sending | `references/content-editing.md` |
 | Cite a property fact or rate-card tier | `references/campaigns/<key>/deck-facts.md` |
 | Change a provider call | `references/contextdev-capabilities.md` |
 | Use Monid for discovery or gap filling | `references/monid-capabilities.md` |

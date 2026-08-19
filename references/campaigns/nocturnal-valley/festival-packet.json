@@ -18,12 +18,30 @@
     "locality": "French Village, MO",
     "locality_source": "deck_key_art"
   },
+  "positioning": {
+    "descriptor": "a new three-night music, arts and camping festival",
+    "audience_line": "a highly engaged electronic-music audience",
+    "experience_line": "three stages, camping, wellness programming, art and community experiences",
+    "source": "client_sample_outreach",
+    "source_received": "2026-08-19",
+    "state": "supplied",
+    "note": "The client's own words for the property, from the outreach samples preserved verbatim in references/knowledge/agency/writing-samples.md. The draft's property sentence uses `descriptor` so the email describes the festival the way he does. `audience_line` and `experience_line` are his phrasings to draw on when writing fit_point; neither is a claim we verified."
+  },
   "format": {
     "stages": [
       "Astral",
       "Nocturnal",
       "Forest"
     ],
+    "zones": [
+      "Astral Stage",
+      "Nocturnal Stage",
+      "Forest Stage",
+      "VIP Experience",
+      "Sampling Activations",
+      "Creator & Social Media"
+    ],
+    "zones_source": "deck_draft_2_slide_6",
     "elements": [
       "multi-day camping",
       "VIP hospitality",
@@ -68,7 +86,7 @@
         "source_date": "2026-08-10"
       }
     ],
-    "reason": "Two client-supplied figures that do not reconcile, and they measure different things \u2014 total attendees against daily admissions. An inaugural festival has no gate history to settle it. No attendance number may appear in outreach until the client states one.",
+    "reason": "Two client-supplied figures that do not reconcile, and they measure different things — total attendees against daily admissions. An inaugural festival has no gate history to settle it. No attendance number may appear in outreach until the client states one.",
     "resolves_when": "Client confirms a single figure and says whether it counts unique attendees or daily admissions."
   },
   "packages": {
@@ -152,7 +170,7 @@
   "source_materials": [
     "knowledge/sources/nocturnal-valley-deck-draft-1.pdf (15 pages)",
     "knowledge/sources/nocturnal-valley-deck-draft-2.pptx (9 slides)",
-    "Client sample cold outreach, 2026-08-11 (reconstructed in knowledge/voice/voice-profile.md)",
+    "Client sample cold outreach (preserved verbatim in knowledge/agency/writing-samples.md)",
     "Client target list of 25 companies, 2026-08-11"
   ],
   "promoter": {
