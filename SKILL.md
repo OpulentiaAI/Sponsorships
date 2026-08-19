@@ -106,18 +106,18 @@ Delivery assembles the dossier, renders the draft, lints the prose, attaches the
 
 Done means lint exits 0, full validation exits 0, and the rendered message appears in `packet.messages[]` with `send_state: ready_to_send` and `review_state: not_required`. Send it through the campaign owner's connected email account without pausing for review. If no recipient route or owner-connected mailbox is available, attach the packet and pitch files on `message_user` and name that operational limitation.
 
-## 5. Email the user a deliverability report
+## 5. Update the user through AgentMail
 
 After all sponsor send attempts in the run, query the email provider for every returned message ID. Record the strongest status each provider proves: `accepted_by_provider`, `delivered`, `bounced`, `failed`, or `unknown_after_send`. Provider acceptance is not inbox delivery.
 
-Send the user exactly one consolidated email with the subject `Sponsorship outreach delivery report`. Use the campaign owner's connected email account as the only transport; AgentMail is not a valid transport. Keep the report separate from sponsor messages and include one row per send attempt with:
+Send the user exactly one consolidated AgentMail email with the subject `Sponsorship outreach delivery report`. Keep the report separate from sponsor messages and include one row per send attempt with:
 
 - sponsor and recipient;
 - send timestamp, provider, and message ID;
 - the verified delivery status and when it was checked;
 - every blocker with its next action, or `No blockers reported`.
 
-Done means exactly one report email covers every send attempt in the run and the report itself has a provider message ID or receipt from the owner's connected mailbox. If that mailbox is unavailable, record `report_blocked_owner_email_unavailable`; if its send fails, retry once and record `report_email_failed` with the provider error. Notify the user through `message_user` in either blocked case. The sponsor sends remain complete; the reporting step remains blocked until the single consolidated email succeeds through the owner's connected mailbox.
+Done means exactly one report email covers every send attempt in the run and AgentMail returns a message ID or receipt for it. If AgentMail is unavailable, record `report_blocked_agentmail_unavailable`; if its send fails, retry once and record `report_email_failed` with the provider error. Notify the user through `message_user` in either blocked case. The sponsor sends remain complete; the reporting step remains blocked until the single consolidated AgentMail email succeeds.
 
 ## Invariants
 
@@ -130,8 +130,8 @@ Done means exactly one report email covers every send attempt in the run and the
 - Property claims come from the dossier, the campaign facts, or Trifecta's source material.
 - The rendered template is the deliverable. Fix a failed render instead of replacing it with handwritten output.
 - A rendered message that passes delivery is ready to send. No separate review or approval step applies.
-- Sponsor messages and the consolidated status report use the campaign owner's connected mailbox. AgentMail is excluded.
-- Each run sends one consolidated deliverability report to the user from the campaign owner's connected mailbox.
+- Sponsor messages use the campaign owner's connected mailbox. AgentMail is excluded from sponsor delivery.
+- Each run sends one consolidated deliverability report to the user through AgentMail.
 
 ## References
 

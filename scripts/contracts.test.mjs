@@ -89,19 +89,19 @@ test("SKILL.md teaches Opulent runtime: invoke, clone if scripts missing, no cd,
   assert.doesNotMatch(nestedSkill, /npm run brief\n/);
 });
 
-test("SKILL.md requires one consolidated receipt-backed report from the owner's connected email", () => {
-  assert.match(nestedSkill, /## 5\. Email the user a deliverability report/);
+test("SKILL.md requires one consolidated receipt-backed user update through AgentMail", () => {
+  assert.match(nestedSkill, /## 5\. Update the user through AgentMail/);
   assert.match(nestedSkill, /After all sponsor send attempts in the run, query the email provider for every returned message ID/);
   assert.match(nestedSkill, /Provider acceptance is not inbox delivery/);
-  assert.match(nestedSkill, /exactly one consolidated email with the subject `Sponsorship outreach delivery report`/);
-  assert.match(nestedSkill, /campaign owner's connected email account as the only transport; AgentMail is not a valid transport/);
+  assert.match(nestedSkill, /exactly one consolidated AgentMail email with the subject `Sponsorship outreach delivery report`/);
   assert.match(nestedSkill, /include one row per send attempt/);
   assert.match(nestedSkill, /every blocker with its next action, or `No blockers reported`/);
   assert.match(nestedSkill, /exactly one report email covers every send attempt in the run/);
-  assert.match(nestedSkill, /receipt from the owner's connected mailbox/);
-  assert.match(nestedSkill, /record `report_blocked_owner_email_unavailable`/);
+  assert.match(nestedSkill, /AgentMail returns a message ID or receipt/);
+  assert.match(nestedSkill, /record `report_blocked_agentmail_unavailable`/);
   assert.match(nestedSkill, /retry once and record `report_email_failed`/);
-  assert.match(nestedSkill, /Sponsor messages and the consolidated status report use the campaign owner's connected mailbox\. AgentMail is excluded/);
+  assert.match(nestedSkill, /Sponsor messages use the campaign owner's connected mailbox\. AgentMail is excluded from sponsor delivery/);
+  assert.match(nestedSkill, /one consolidated deliverability report to the user through AgentMail/);
 });
 
 test("brief from a foreign cwd prints node SKILL_ROOT/scripts commands and does not cd", () => {
