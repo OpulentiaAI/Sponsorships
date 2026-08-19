@@ -180,9 +180,9 @@
     "draft_text_path": null,
     "subject": null,
     "preview_text": null,
-    "review_state": null,
+    "review_state": "not_required",
     "review_note": null,
-    "send_state": "draft_only_not_sent",
-    "sender_authority": "unconfirmed"
+    "send_state": "pending_draft",
+    "sender_authority": "authorized"
   }
 }

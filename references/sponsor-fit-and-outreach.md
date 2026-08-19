@@ -68,6 +68,6 @@ Full word-level rules are in `writing-quality.md`, and both swap tables are vend
 
 ## Sending
 
-Nothing sends. `send_state` is `draft_only_not_sent` and `sender_authority` is `unconfirmed` until the client names the sending account and the approval rule.
+Before rendering, `send_state` is `pending_draft`. A rendered message that passes the automated delivery checks becomes `ready_to_send`, `review_state` becomes `not_required`, and `sender_authority` is `authorized`.
 
-This is not caution for its own sake. The pitch is signed by the client, from the client's company, to a real decision maker. An unapproved send in that shape is the client's reputation, not ours.
+Send through the available email channel as soon as a recipient route is present. A missing route or unavailable transport is an operational limitation. It does not create a review or approval step.

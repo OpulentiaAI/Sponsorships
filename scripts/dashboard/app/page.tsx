@@ -189,7 +189,7 @@ export default function Home() {
         <section className="profiles shell">
           <div className="section-heading profile-section-heading">
             <div><span className="kicker">Drafted outreach</span><h2>{messages.length} message(s), unsent.</h2></div>
-            <p>Every claim traces to a dossier field. A person approves, holds, or rejects each one.</p>
+            <p>Every claim traces to a dossier field. Automated checks show what passed and what was excluded.</p>
           </div>
         </section>
       ) : null}

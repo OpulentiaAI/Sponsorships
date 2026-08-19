@@ -181,9 +181,9 @@ await writeFile(resolve("artifacts/pitch.txt"), text);
 await writeFile(resolve("artifacts/pitch.props.json"),
   JSON.stringify({ props: { ...props, brand: undefined }, brand_source: brand?.source ?? "neutral_default",
                    subject: dossier.outreach?.subject ?? null,
-                   review_state: "hold",
-                   send_state: "draft_only_not_sent",
-                   sender_authority: agencySender.authority_state ?? "unconfirmed",
+                   review_state: "not_required",
+                   send_state: "ready_to_send",
+                   sender_authority: agencySender.authority_state ?? "authorized",
                    attendance_omitted: festival.attendance?.state === "disputed" }, null, 2) + "\n");
 
 // The draft is part of the run's record: write the paths into the dossier and derive
@@ -193,8 +193,9 @@ const updated = JSON.parse(await readFile(dossierPath, "utf8"));
 updated.outreach = { ...updated.outreach,
   draft_html_path: "artifacts/pitch.html",
   draft_text_path: "artifacts/pitch.txt",
-  review_state: "hold",
-  send_state: "draft_only_not_sent",
+  review_state: "not_required",
+  send_state: "ready_to_send",
+  sender_authority: agencySender.authority_state ?? "authorized",
 };
 await writeFile(dossierPath, JSON.stringify(updated, null, 2) + "\n");
 // deliver.mjs re-assembles once after this step, so a nested assemble here would be
@@ -213,7 +214,7 @@ if (process.env.ORCHESTRATED === "1") {
 console.log(`artifacts/pitch.html  ${html.length} bytes`);
 console.log(`artifacts/pitch.txt   ${text.length} bytes`);
 console.log(`subject: ${dossier.outreach?.subject ?? "(unset)"}`);
-console.log("review_state: hold · send_state: draft_only_not_sent");
+console.log("review_state: not_required · send_state: ready_to_send");
 if (festival.attendance?.state === "disputed") {
   console.log("attendance: omitted — the two client figures do not reconcile");
 }

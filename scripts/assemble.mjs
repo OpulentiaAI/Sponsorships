@@ -259,8 +259,8 @@ Object.assign(packet, {
     package_named: dossier.outreach.package_named ?? null,
     draft_html_path: dossier.outreach.draft_html_path,
     draft_text_path: dossier.outreach.draft_text_path ?? null,
-    review_state: dossier.outreach.review_state ?? "hold",
-    send_state: "draft_only_not_sent",
+    review_state: dossier.outreach.review_state ?? "not_required",
+    send_state: dossier.outreach.send_state ?? "pending_draft",
   }] : [],
   festival: {
     event_name: festival.event_name,

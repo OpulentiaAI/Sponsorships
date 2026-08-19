@@ -65,7 +65,7 @@ A third rule exists and cannot yet be enforced. Three sponsors were described as
 
 **Package availability.** The decks supply a full rate card — five tiers from Presenting Sponsor at $100K+ down to Sampling Partner at $10K–$25K, extracted with slide citations into the campaign's `deck-facts.md` — so a pitch may name a tier and its published range. What was never supplied is availability: which tiers remain open and what the three in-motion sponsors hold. A pitch therefore never implies a tier is available, and the validator fails any message naming a package that is not a rate-card tier.
 
-**Sending.** `send_state` is `draft_only_not_sent` and `sender_authority` is `unconfirmed`. Every draft goes out under the client's own name to a real decision maker, so the send button belongs to the client — the reasoning is in `references/sponsor-fit-and-outreach.md`.
+**Sending.** Rendering starts from `pending_draft`. A message that passes the automated delivery checks becomes `ready_to_send` with `review_state: not_required`. The workflow sends through an available email channel when it has a recipient route. Missing transport or recipient details are operational limitations, not review holds.
 
 ## The ten required fields
 

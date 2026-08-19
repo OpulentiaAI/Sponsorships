@@ -118,9 +118,10 @@ test("every template field carries the six-key envelope", () => {
   }
 });
 
-test("the template ships nothing sendable", () => {
-  assert.equal(dossierTemplate.outreach.send_state, "draft_only_not_sent");
-  assert.equal(dossierTemplate.outreach.sender_authority, "unconfirmed");
+test("the template starts pending draft with no review requirement", () => {
+  assert.equal(dossierTemplate.outreach.send_state, "pending_draft");
+  assert.equal(dossierTemplate.outreach.review_state, "not_required");
+  assert.equal(dossierTemplate.outreach.sender_authority, "authorized");
   assert.equal(dossierTemplate.outreach.subject, null);
   assert.equal(dossierTemplate.operation.write_policy, "artifact_only_no_send");
 });
@@ -228,8 +229,8 @@ test("a dollar figure outside the rate card is caught", () => {
   assert.match(r.out, /tier-fidelity/);
 });
 
-test("sender authority is unconfirmed, and the sender is the agency's", () => {
-  assert.equal(agencySender.authority_state, "unconfirmed");
+test("sender authority permits validated outreach without review, and the sender is the agency's", () => {
+  assert.equal(agencySender.authority_state, "authorized");
   assert.equal(agencySender.company, "Trifecta Marketing");
   assert.ok(!("sender" in festival), "the campaign packet carries the property, never the sender");
 });
@@ -407,6 +408,47 @@ test("an open target without judgement or draft fails the full gather, and passe
   assert.match(full.out, /fit\.band is unwritten/);
   assert.match(full.out, /no rendered draft attached/);
   assert.equal(validateRun(file, dir, ["--partial"]).code, 0);
+});
+
+function sendReadyPacket(reviewState = "not_required") {
+  const result = packetWith((packet, dossier) => {
+    dossier.fit = { band: "category_only", rationale: "Client-selected category fit.", counter_evidence: null };
+    dossier.outreach = {
+      ...dossier.outreach,
+      reason_to_engage: "Acme sponsored a comparable event in July 2026.",
+      reason_source_url: "https://example.com/acme-activation",
+      subject: "Nocturnal Valley sponsorship",
+      preview_text: "A September festival partnership in the St. Louis market.",
+      draft_html_path: "pitch.html",
+      draft_text_path: "pitch.txt",
+      review_state: reviewState,
+      send_state: "ready_to_send",
+      sender_authority: "authorized",
+    };
+    packet.messages = [{
+      sponsor_id: dossier.id,
+      subject: dossier.outreach.subject,
+      draft_html_path: "pitch.html",
+      draft_text_path: "pitch.txt",
+      review_state: reviewState,
+      send_state: "ready_to_send",
+    }];
+  });
+  writeFileSync(join(result.dir, "pitch.html"), "<p>Send-ready sponsor pitch</p>");
+  writeFileSync(join(result.dir, "pitch.txt"), "Send-ready sponsor pitch");
+  return result;
+}
+
+test("a rendered message passes full validation as ready_to_send with no review", () => {
+  const { dir, file } = sendReadyPacket();
+  assert.equal(validateRun(file, dir).code, 0);
+});
+
+test("a rendered message cannot retain a review hold", () => {
+  const { dir, file } = sendReadyPacket("hold");
+  const result = validateRun(file, dir);
+  assert.equal(result.code, 1);
+  assert.match(result.out, /must not carry a review hold/);
 });
 
 test("a strong band without its evidence is refused by name", () => {
@@ -701,7 +743,7 @@ test("the single target path remains two commands after mass discovery", async (
   assert.equal(pkg.scripts.brief, "node scripts/brief.mjs");
   assert.ok(Object.values(pkg.scripts).every((command) => !command.includes("skills/opulent-sponsor-context-showcase")));
   assert.ok(Object.values(pkg.scripts).filter((command) => /\bnode\b/.test(command)).every((command) => /node(?: --test)? scripts\//.test(command)));
-  // The dashboard build stays off deliver's default path: it is a review surface,
+  // The dashboard build stays off deliver's default path: it is an optional run summary,
   // and a Next build costs more wall clock than every other stage combined.
   assert.ok(!pkg.scripts.deliver.includes("dashboard"));
 });

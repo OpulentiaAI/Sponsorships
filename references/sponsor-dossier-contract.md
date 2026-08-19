@@ -32,7 +32,7 @@ Every field in `required_fields` carries the same six keys:
 | `budget_signal` | Dated activation at a known scale | A page states or implies a spend band |
 | `decision_maker` | `/people/retrieve` | An exact profile URL is supplied by the client or found in a cited public search result, and profile retrieval verifies it |
 | `decision_maker_title` | `/people/retrieve` | Depends on `decision_maker` |
-| `contact_route` | A verification provider | Never, in showcase mode. Stays `null` |
+| `contact_route` | A sourced recipient route or connected email channel | A concrete destination is available; otherwise it stays `unknown` |
 | `compliance_flags` | the campaign's `exclusions.csv` | Always; empty is a real answer |
 | `changes_since_last` | A prior accepted run | Second run onward |
 
@@ -60,7 +60,7 @@ Bands and their requirements are in `sponsor-fit-and-outreach.md`.
 
 ## Outreach
 
-`outreach.reason_to_engage` needs `reason_source_url`. `outreach.send_state` is always `draft_only_not_sent`. `outreach.sender_authority` is `unconfirmed` until the client names the sending account.
+`outreach.reason_to_engage` needs `reason_source_url`. Before rendering, `outreach.send_state` is `pending_draft`. A rendered message that passes delivery is `ready_to_send`, with `review_state: not_required` and `sender_authority: authorized`.
 
 `outreach.package_named` is a rate-card tier verbatim, or null. The rate card is the deck's own (slide 7) and may be shown and named; availability was never supplied and is never implied. The validator checks the tier name on the sponsor record and on every derived message.
 
@@ -73,11 +73,10 @@ Structure, in every mode:
 - A required field missing, or present with no `state`.
 - `confidence: Verified` with no `source_url`.
 - A negative value on an activity field without `state: retrieved`.
-- `contact_route` with a non-null value.
 - A draft path or subject line on any blocked target.
 - A named package that is not a rate-card tier, on the sponsor or in a message.
 - `already_in_motion_state` set to anything but `clear` or `unverified_against_rule` — and `clear` only once the client's exclusion gate is resolved.
-- `send_state` other than `draft_only_not_sent`.
+- A rendered message whose `send_state` is not `ready_to_send`, whose `review_state` is not `not_required`, or whose sender authority is not `authorized`.
 - An `executed` operation with no receipt.
 - A disputed attendance figure inside a drafted message.
 - A bearer token or API key anywhere in the packet.

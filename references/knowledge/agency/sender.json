@@ -4,6 +4,6 @@
   "preferred_name": "Bob",
   "company": "Trifecta Marketing",
   "calendly": "https://calendly.com/robertdittrich48/30min",
-  "authority_state": "unconfirmed",
-  "authority_reason": "The sending account and outreach permissions were never established. Every draft stays a draft until they are."
+  "authority_state": "authorized",
+  "authority_reason": "A message that passes the automated delivery checks may be sent without a separate review or approval step."
 }

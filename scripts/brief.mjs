@@ -82,7 +82,7 @@ EVIDENCE
   Resolve a person only after exact LinkedIn profile retrieval. Search hits are candidates.
   One employer hop only. Do not copy the old sponsor's activation onto the new employer.
   Identity: reject a row without a bare domain. Do not search a name into an identity.
-  A blocked target has no draft. Everything remains draft_only_not_sent.
+  A blocked target has no draft. A rendered message that passes delivery is ready_to_send.
 
 CREDENTIALS
   Never ask for CONTEXT_DEV_API_KEY in chat. In Opulent, offer Secrets/Connections once
@@ -90,8 +90,8 @@ CREDENTIALS
   blocked_missing_credentials.
 
 DELIVERY
-  Attach ${artifactsDir()}/packet.json, pitch.html, and pitch.txt on message_user.
-  The user cannot open sandbox paths.
+  Send a validated message through the available email channel when a recipient route exists.
+  Otherwise attach ${artifactsDir()}/packet.json, pitch.html, and pitch.txt on message_user.
 
 SCRATCHPAD
   For mass discovery or a multi-target run, document_manage(action="read") at start,

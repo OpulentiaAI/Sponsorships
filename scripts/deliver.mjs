@@ -9,7 +9,7 @@
  * signal, once after the draft renders to attach it, and no more. render_email skips
  * its own re-assemble when this orchestrator is driving.
  *
- * The dashboard build is off the critical path. It is a review surface, not a step in
+ * The dashboard build is off the critical path. It is an optional run summary, not a step in
  * sourcing a sponsor, and a Next build costs more wall clock than everything else in
  * this file put together. `--dashboard` opts into it.
  *
@@ -81,7 +81,7 @@ console.log(valid.out.trimEnd());
 console.log(step("validate", Date.now() - s));
 if (valid.code) process.exit(valid.code);
 
-// ---- 4 · the review surface, only when asked -------------------------------
+// ---- 4 · the optional run summary, only when asked -------------------------
 if (has("dashboard")) {
   s = Date.now();
   const { stdout } = await execFileAsync("npm", ["--prefix", resolve(SKILL_ROOT, "scripts/dashboard"), "run", "build"], {
@@ -94,7 +94,8 @@ if (has("dashboard")) {
 const packet = JSON.parse(await readFile(resolve("artifacts/packet.json"), "utf8"));
 const sponsor = packet.sponsors[0] ?? {};
 console.log(`\ndeliver complete in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
-console.log(`  ${sponsor.company} · fit ${sponsor.fit?.band ?? "unwritten"} · ${packet.messages?.length ?? 0} draft`);
+console.log(`  ${sponsor.company} · fit ${sponsor.fit?.band ?? "unwritten"} · ${packet.messages?.length ?? 0} send-ready message`);
 console.log(`  ${(packet.open_gates ?? []).filter((g) => g.state !== "resolved").length} open gates · ${(packet.unknowns ?? []).length} unknowns`);
-if (!has("dashboard")) console.log("  dashboard: skipped (add --dashboard to build the review page)");
-console.log(`  attach on message_user: ${resolve("artifacts/packet.json")}`);
+if (!has("dashboard")) console.log("  dashboard: skipped (add --dashboard to build the run summary)");
+console.log(`  send_state: ${sponsor.outreach?.send_state ?? "pending_draft"} · review_state: ${sponsor.outreach?.review_state ?? "not_required"}`);
+console.log(`  fallback attachment: ${resolve("artifacts/packet.json")}`);
