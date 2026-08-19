@@ -10,7 +10,7 @@
  * By default it also enforces completeness — the full gather. A run that reaches this
  * step carries written judgement and an attached draft, or says in gate vocabulary why
  * it cannot: fit band with its evidence, counter-evidence, a sourced reason, subject and
- * preview, and the rendered files on disk. `--partial` skips only that block, for
+ * preview, and the Markdown file on disk. `--partial` skips only that block, for
  * checking structure mid-run; step 7 runs the full contract.
  */
 
@@ -74,7 +74,7 @@ for (const s of packet.sponsors ?? []) {
   // A blocked target never carries a draft, whichever gate blocked it.
   const gate = s.gates?.draft_gate ?? "open";
   if (gate.startsWith("blocked")) {
-    check(!s.outreach?.draft_html_path && !s.outreach?.draft_text_path,
+    check(!s.outreach?.draft_markdown_path,
       `${id}: ${gate} but carries a draft path`);
     check(!s.outreach?.subject, `${id}: ${gate} but carries a subject line`);
   }
@@ -111,8 +111,8 @@ for (const s of packet.sponsors ?? []) {
     check(Boolean(s.outreach?.reason_source_url), `${id}: reason_to_engage has no source URL`);
     check(Boolean(s.outreach?.subject), `${id}: subject is unwritten`);
     check(Boolean(s.outreach?.preview_text), `${id}: preview_text is unwritten`);
-    check(Boolean(s.outreach?.draft_html_path), `${id}: no rendered draft attached — run npm run email`);
-    for (const key of ["draft_html_path", "draft_text_path"]) {
+    check(Boolean(s.outreach?.draft_markdown_path), `${id}: no Markdown draft attached — run npm run email`);
+    for (const key of ["draft_markdown_path"]) {
       const p = s.outreach?.[key];
       if (p) check(existsSync(resolve(process.cwd(), p)), `${id}: ${key} points at ${p}, which does not exist`);
     }
@@ -129,14 +129,14 @@ for (const s of packet.sponsors ?? []) {
       `${id}: already_in_motion_state is "clear" while the sponsor_exclusions gate is unresolved — nobody has the list to clear it against`);
   }
 
-  const hasDraft = Boolean(s.outreach?.draft_html_path || s.outreach?.draft_text_path);
+  const hasDraft = Boolean(s.outreach?.draft_markdown_path);
   const sendState = s.outreach?.send_state ?? "pending_draft";
   check(["pending_draft", "ready_to_send"].includes(sendState),
     `${id}: unknown send_state ${sendState}`);
   if (hasDraft) {
-    check(sendState === "ready_to_send", `${id}: rendered message must be ready_to_send`);
-    check(s.outreach?.review_state === "not_required", `${id}: rendered message must not carry a review hold`);
-    check(s.outreach?.sender_authority === "authorized", `${id}: rendered message must carry authorized sender authority`);
+    check(sendState === "ready_to_send", `${id}: Markdown message must be ready_to_send`);
+    check(s.outreach?.review_state === "not_required", `${id}: Markdown message must not carry a review hold`);
+    check(s.outreach?.sender_authority === "authorized", `${id}: Markdown message must carry authorized sender authority`);
   }
 }
 
@@ -161,8 +161,8 @@ if (fest.attendance_state === "disputed") {
 }
 const tierNames = (fest.rate_card ?? []).map((t) => String(t.tier).toLowerCase());
 for (const m of packet.messages ?? []) {
-  check(m.send_state === "ready_to_send", "rendered packet message must be ready_to_send");
-  check(m.review_state === "not_required", "rendered packet message must not carry a review hold");
+  check(m.send_state === "ready_to_send", "Markdown packet message must be ready_to_send");
+  check(m.review_state === "not_required", "Markdown packet message must not carry a review hold");
   if (m.package_named) {
     check(tierNames.some((n) => String(m.package_named).toLowerCase().includes(n)),
       `message names a package that is not a rate-card tier: ${m.package_named}`);

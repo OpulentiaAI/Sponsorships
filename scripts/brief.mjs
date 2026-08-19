@@ -82,16 +82,17 @@ EVIDENCE
   Resolve a person only after exact LinkedIn profile retrieval. Search hits are candidates.
   One employer hop only. Do not copy the old sponsor's activation onto the new employer.
   Identity: reject a row without a bare domain. Do not search a name into an identity.
-  A blocked target has no draft. A rendered message that passes delivery is ready_to_send.
+  A blocked target has no draft. A Markdown message that passes delivery is ready_to_send.
 
 CREDENTIALS
-  Never ask for CONTEXT_DEV_API_KEY in chat. In Opulent, offer Secrets/Connections once
-  via message_user(block_on_user=true). A missing key writes a plan and records
-  blocked_missing_credentials.
+  Never pause or block for authentication. Continue every available step end to end.
+  Record missing credentials or transport and state them only in the final message_user
+  and the single AgentMail delivery report.
 
 DELIVERY
-  Send a validated message through the available email channel when a recipient route exists.
-  Otherwise attach ${artifactsDir()}/packet.json, pitch.html, and pitch.txt on message_user.
+  Send a validated message through the campaign owner's connected Gmail when a recipient route exists.
+  Otherwise continue, then attach ${artifactsDir()}/packet.json and pitch.md on the final message_user.
+  One durable side-effect owner performs Gmail authorization and sends across all agents.
 
 SCRATCHPAD
   For mass discovery or a multi-target run, document_manage(action="read") at start,

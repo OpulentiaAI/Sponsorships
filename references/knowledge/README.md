@@ -10,6 +10,6 @@ Two kinds of knowledge live in this repository, and the split is the identity of
 
 1. A property fact in outreach traces to the campaign's `deck-facts.md` or to a dossier field. A fact in neither is not written.
 2. Zone and tier names are the campaign deck's, verbatim.
-3. The deck's promotional register stays in the deck; the email is written in the sender's register from `agency/trifecta-profile.md`. `scripts/lint_pitch.mjs` enforces both banned lists after every render.
+3. The deck's promotional register stays in the deck; the email is written in the sender's register from `agency/trifecta-profile.md`. `scripts/lint_pitch.mjs` enforces both banned lists after every Markdown draft.
 4. When the client revises a deck, the new file lands in the campaign's `sources/`, `deck-facts.md` is re-cited against it, and the diff between the two is itself a finding.
 5. Nothing here is verified by us: agency and campaign files alike are client-supplied, preserved as received, and carry the same evidence envelope as everything else.

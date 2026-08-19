@@ -4,7 +4,7 @@
  *
  *   node scripts/lint_pitch.mjs [artifacts-dir]
  *
- * Runs after every render (`npm run email` chains it). Checks pitch.txt, the subject,
+ * Runs after every draft (`npm run email` chains it). Checks pitch.md, the subject,
  * and the preview against the agency and campaign banned-phrases.json files and the rules the voice
  * profile states. Exit 1 is a finding; the fix is rewriting the pitch, never this file.
  *
@@ -25,10 +25,10 @@ const artDir = resolve(process.cwd(), process.argv[2] ?? "artifacts");
 const failures = [];
 const fail = (rule, detail) => failures.push({ rule, detail });
 
-const txtPath = resolve(artDir, "pitch.txt");
+const txtPath = resolve(artDir, "pitch.md");
 const propsPath = resolve(artDir, "pitch.props.json");
 if (!existsSync(txtPath) || !existsSync(propsPath)) {
-  console.error(`lint_pitch: ${artDir} has no pitch.txt / pitch.props.json. Render first: npm run email`);
+  console.error(`lint_pitch: ${artDir} has no pitch.md / pitch.props.json. Write the draft first: npm run email`);
   process.exit(2);
 }
 

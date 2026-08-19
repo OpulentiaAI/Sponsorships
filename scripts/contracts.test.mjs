@@ -46,7 +46,7 @@ test("the skill has one discoverable root and only references and scripts beneat
   assert.ok(readdirSync(resolve(skillDir, "scripts"), { withFileTypes: true }).some((entry) => entry.isFile() && entry.name.endsWith(".mjs")));
   assert.match(nestedSkill, /^---\nname: opulent-sponsor-context-showcase\ndescription: \|\n/);
   assert.match(nestedSkill, /Sponsor discovery and outreach for festival campaigns\./);
-  assert.match(nestedSkill, /\nlicense: MIT\ncompatibility:/);
+  assert.match(nestedSkill, /\nlicense: MIT\nallowed-tools: Bash/);
   assert.match(nestedSkill, /\nmetadata:\n  author: opulent\n  version: "0\.4\.0"\n---\n/);
   assert.doesNotMatch(nestedSkill, /disable-model-invocation:/);
   for (const file of [
@@ -74,7 +74,7 @@ test("scripts pin skill data to SKILL.md and artifacts to the workspace cwd", as
   assert.match(src, /export const nodeScript/);
   assert.doesNotMatch(src, /\.\.\/\.\.\/\.\./);
   const research = await readFile(resolve(scriptDir, "research.mjs"), "utf8");
-  assert.match(research, /resolve\(here, "\.\."\)/);
+  assert.match(research, /resolve\(here, script\)/);
   assert.doesNotMatch(research, /resolve\(here, "\.\.\/\.\.\/\.\."\)/);
 });
 
@@ -84,7 +84,7 @@ test("SKILL.md teaches Opulent runtime: invoke, clone if scripts missing, no cd,
   assert.match(nestedSkill, /bash_run/);
   assert.match(nestedSkill, /node \/opulent\/workspace\/\.agents\/skills\/opulent-sponsor-context-showcase\/scripts\/brief\.mjs/);
   assert.match(nestedSkill, /git clone https:\/\/github\.com\/OpulentiaAI\/Sponsorships\.git/);
-  assert.match(nestedSkill, /message_user\(block_on_user=true\)/);
+  assert.match(nestedSkill, /Never pause or block the run for authentication/);
   assert.match(nestedSkill, /document_manage\(action="read"\)/);
   assert.doesNotMatch(nestedSkill, /npm run brief\n/);
 });
@@ -100,8 +100,19 @@ test("SKILL.md requires one consolidated receipt-backed user update through Agen
   assert.match(nestedSkill, /AgentMail returns a message ID or receipt/);
   assert.match(nestedSkill, /record `report_blocked_agentmail_unavailable`/);
   assert.match(nestedSkill, /retry once and record `report_email_failed`/);
-  assert.match(nestedSkill, /Sponsor messages use the campaign owner's connected mailbox\. AgentMail is excluded from sponsor delivery/);
+  assert.match(nestedSkill, /Sponsor messages use the campaign owner's connected Gmail account\. AgentMail is excluded from sponsor delivery/);
   assert.match(nestedSkill, /one consolidated deliverability report to the user through AgentMail/);
+});
+
+test("SKILL.md prevents auth pauses and duplicate agent-side Gmail effects", () => {
+  assert.match(nestedSkill, /Do not request an interactive Gmail or provider authorization checkpoint/);
+  assert.match(nestedSkill, /Continue every available step end to end/);
+  assert.match(nestedSkill, /only in the final `message_user` and the single AgentMail delivery report/);
+  assert.match(nestedSkill, /Use agent spawns judiciously and only for genuinely independent work/);
+  assert.match(nestedSkill, /one durable owner for Gmail authorization and send side effects/);
+  assert.match(nestedSkill, /root coordinates or waits instead of repeating delegated work/);
+  assert.match(nestedSkill, /merge every relevant result and file from spawned agents into the main run/);
+  assert.match(nestedSkill, /at most one Gmail authorization attempt and one send attempt per approved recipient/);
 });
 
 test("brief from a foreign cwd prints node SKILL_ROOT/scripts commands and does not cd", () => {
@@ -204,7 +215,7 @@ test("a missing key records blocked and exits 0, so the run continues", () => {
 
 function lintPitch(text, subject, preview) {
   const dir = mkdtempSync(join(tmpdir(), "pitch-"));
-  writeFileSync(join(dir, "pitch.txt"), text);
+  writeFileSync(join(dir, "pitch.md"), text);
   writeFileSync(join(dir, "pitch.props.json"),
     JSON.stringify({ subject, props: { previewText: preview } }));
   try {
@@ -226,6 +237,52 @@ const CLEAN_PITCH = [
 test("a clean pitch in the sender's register lints clean", () => {
   const r = lintPitch(CLEAN_PITCH, "Sampling at Nocturnal Valley", "Three nights near St. Louis in September");
   assert.equal(r.code, 0);
+});
+
+test("the real draft path writes and lints Gmail-ready Markdown with authorship requirements", () => {
+  const dir = mkdtempSync(join(tmpdir(), "markdown-draft-"));
+  mkdirSync(join(dir, "artifacts"), { recursive: true });
+  const dossier = structuredClone(dossierTemplate);
+  dossier.id = "acme";
+  dossier.company = "Acme";
+  dossier.domain = "acme.example";
+  dossier.gates.draft_gate = "open";
+  dossier.required_fields.activation_history = {
+    ...dossier.required_fields.activation_history,
+    value: "Acme sampled at a comparable festival in July 2026.",
+    state: "retrieved",
+    confidence: "Verified",
+    source_url: "https://example.com/acme-activation",
+  };
+  dossier.outreach = {
+    ...dossier.outreach,
+    reason_to_engage: "Acme sampled at a comparable festival in July 2026.",
+    reason_source_url: "https://example.com/acme-activation",
+    personal_note: "Acme sampled at a comparable festival in July 2026. Nocturnal Valley offers a similar multi-day setting.",
+    package_named: "Sampling Partner",
+    subject: "Sampling at Nocturnal Valley",
+    preview_text: "Three nights near St. Louis in September",
+  };
+  writeFileSync(join(dir, "artifacts/dossier.json"), JSON.stringify(dossier));
+
+  run(resolve(scriptDir, "render_email.mjs"), [], {
+    cwd: dir,
+    env: { ...process.env, ORCHESTRATED: "1" },
+  });
+  run(resolve(scriptDir, "lint_pitch.mjs"), [], { cwd: dir });
+
+  const markdown = readFileSync(join(dir, "artifacts/pitch.md"), "utf8");
+  const updated = JSON.parse(readFileSync(join(dir, "artifacts/dossier.json"), "utf8"));
+  assert.match(markdown, /^Hi Acme team,/);
+  assert.match(markdown, /\[source\]\(https:\/\/example\.com\/acme-activation\)/);
+  assert.match(markdown, /Initial offer sheet:/);
+  assert.match(markdown, /\[Book fifteen minutes\]\(/);
+  assert.equal((markdown.match(/Book fifteen minutes/g) ?? []).length, 1);
+  assert.equal(updated.outreach.draft_markdown_path, "artifacts/pitch.md");
+  assert.equal(updated.outreach.send_state, "ready_to_send");
+  assert.equal(updated.outreach.review_state, "not_required");
+  assert.equal(existsSync(join(dir, "artifacts/pitch.html")), false);
+  assert.equal(existsSync(join(dir, "artifacts/pitch.txt")), false);
 });
 
 test("deck register and disputed figures are caught by name", () => {
@@ -421,7 +478,7 @@ test("an open target without judgement or draft fails the full gather, and passe
   const full = validateRun(file, dir);
   assert.equal(full.code, 1);
   assert.match(full.out, /fit\.band is unwritten/);
-  assert.match(full.out, /no rendered draft attached/);
+  assert.match(full.out, /no Markdown draft attached/);
   assert.equal(validateRun(file, dir, ["--partial"]).code, 0);
 });
 
@@ -434,8 +491,7 @@ function sendReadyPacket(reviewState = "not_required") {
       reason_source_url: "https://example.com/acme-activation",
       subject: "Nocturnal Valley sponsorship",
       preview_text: "A September festival partnership in the St. Louis market.",
-      draft_html_path: "pitch.html",
-      draft_text_path: "pitch.txt",
+      draft_markdown_path: "pitch.md",
       review_state: reviewState,
       send_state: "ready_to_send",
       sender_authority: "authorized",
@@ -443,23 +499,21 @@ function sendReadyPacket(reviewState = "not_required") {
     packet.messages = [{
       sponsor_id: dossier.id,
       subject: dossier.outreach.subject,
-      draft_html_path: "pitch.html",
-      draft_text_path: "pitch.txt",
+      draft_markdown_path: "pitch.md",
       review_state: reviewState,
       send_state: "ready_to_send",
     }];
   });
-  writeFileSync(join(result.dir, "pitch.html"), "<p>Send-ready sponsor pitch</p>");
-  writeFileSync(join(result.dir, "pitch.txt"), "Send-ready sponsor pitch");
+  writeFileSync(join(result.dir, "pitch.md"), "Send-ready sponsor pitch");
   return result;
 }
 
-test("a rendered message passes full validation as ready_to_send with no review", () => {
+test("a Markdown message passes full validation as ready_to_send with no review", () => {
   const { dir, file } = sendReadyPacket();
   assert.equal(validateRun(file, dir).code, 0);
 });
 
-test("a rendered message cannot retain a review hold", () => {
+test("a Markdown message cannot retain a review hold", () => {
   const { dir, file } = sendReadyPacket("hold");
   const result = validateRun(file, dir);
   assert.equal(result.code, 1);
@@ -768,21 +822,20 @@ test("render_email does not re-assemble when an orchestrator is driving", async 
   assert.match(src, /process\.env\.ORCHESTRATED === "1"/);
 });
 
-test("the render packages are runtime dependencies, not dev tooling", async () => {
+test("Markdown drafting has no React Email runtime dependencies", async () => {
   const pkg = JSON.parse(await readFile(resolve("package.json"), "utf8"));
-  // In devDependencies these were absent on every fresh clone, render_email exited 3,
-  // and the operator typed the email out by hand. The rendered template is the output.
   for (const dep of ["@react-email/render", "@react-email/components", "react", "react-dom"]) {
-    assert.ok(pkg.dependencies?.[dep], `${dep} must be a runtime dependency`);
-    assert.ok(!pkg.devDependencies?.[dep], `${dep} must not be dev-only`);
+    assert.ok(!pkg.dependencies?.[dep], `${dep} is not needed for Markdown drafts`);
+    assert.ok(!pkg.devDependencies?.[dep], `${dep} is not needed for Markdown drafts`);
   }
+  assert.equal(existsSync(resolve(skillDir, "references/templates/sponsor-pitch.mjs")), false);
 });
 
-test("research installs the render packages, and the draft step retries", async () => {
+test("research and drafting do not install render packages", async () => {
   const research = await readFile(resolve(scriptDir, "research.mjs"), "utf8");
   const email = await readFile(resolve(scriptDir, "render_email.mjs"), "utf8");
-  assert.match(research, /node_modules\/@react-email\/render/);
-  assert.match(research, /npm", \["install"/);
-  assert.match(email, /render dependencies absent, installing once/);
-  assert.match(email, /Do not hand-write the email/);
+  assert.doesNotMatch(research, /@react-email|npm", \["install"/);
+  assert.doesNotMatch(email, /@react-email|pitch\.html|pitch\.txt/);
+  assert.match(email, /artifacts\/pitch\.md/);
+  assert.match(email, /draft_markdown_path/);
 });

@@ -62,7 +62,7 @@ Where a required input was named and never delivered — the sponsorship invento
 
 A call is `executed` only with an HTTP response **and** a stored receipt. Otherwise it is `proposed`, `blocked_missing_credentials`, `blocked_endpoint_access`, or `failed` — in that vocabulary, precisely. Fallback work is never described as the capability it replaced, and a proposed operation is never rendered as a completed one.
 
-A rendered message that passes the automated delivery checks is recorded as `ready_to_send`. No named approver or review hold is required.
+A Markdown message that passes the automated delivery checks is recorded as `ready_to_send`. No named approver, review hold, or authentication pause is required.
 
 ## Publication
 

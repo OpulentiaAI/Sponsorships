@@ -14,7 +14,7 @@
  * artifacts/dossier.json survives a re-assemble, because wiping a person's judgement to
  * refresh a receipt is how a finished run silently loses its conclusions. `--fresh`
  * discards it deliberately. The packet is always derived from the merged dossier, so
- * everything the run knows — fields, judgement, and any rendered draft — lands in one
+ * everything the run knows — fields, judgement, and any Markdown draft — lands in one
  * artifact the validator and the dashboard both read.
  *
  * references/templates/ is never written to.
@@ -249,16 +249,15 @@ Object.assign(packet, {
   },
   excluded: (cohort.blocked ?? []).map((b) => ({ company: b.company, category: b.category, reason: (b.problems ?? []).join("; ") })),
   sponsors: [dossier],
-  // A rendered draft is part of the run's record. The dossier's draft paths are the
+  // A Markdown draft is part of the run's record. The dossier's draft path is the
   // source of truth; the packet's messages list is derived so the validator and the
   // dashboard read the same fact.
-  messages: dossier.outreach?.draft_html_path ? [{
+  messages: dossier.outreach?.draft_markdown_path ? [{
     sponsor_id: dossier.id,
     subject: dossier.outreach.subject ?? null,
     preview_text: dossier.outreach.preview_text ?? null,
     package_named: dossier.outreach.package_named ?? null,
-    draft_html_path: dossier.outreach.draft_html_path,
-    draft_text_path: dossier.outreach.draft_text_path ?? null,
+    draft_markdown_path: dossier.outreach.draft_markdown_path,
     review_state: dossier.outreach.review_state ?? "not_required",
     send_state: dossier.outreach.send_state ?? "pending_draft",
   }] : [],

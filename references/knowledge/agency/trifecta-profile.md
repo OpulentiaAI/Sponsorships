@@ -26,7 +26,7 @@ That is the whole model. Four moves, no throat-clearing, no enthusiasm performed
 
 ## The machine-checkable half
 
-`banned-phrases.json` beside this file holds the agency-wide bans — phrases that never appear in any pitch Trifecta signs. Each campaign adds its own `banned-phrases.json` for that deck's promotional register (correct in the brochure, banned in the email). `scripts/lint_pitch.mjs` enforces both lists plus the no-attendance rule, the em-dash ban, the single ask, and tier fidelity; `npm run email` runs it after every render. Exit 1 is a finding, and editing the pitch to pass is the job.
+`banned-phrases.json` beside this file holds the agency-wide bans — phrases that never appear in any pitch Trifecta signs. Each campaign adds its own `banned-phrases.json` for that deck's promotional register (correct in the brochure, banned in the email). `scripts/lint_pitch.mjs` enforces both lists plus the no-attendance rule, the em-dash ban, the single ask, and tier fidelity; `npm run email` runs it after every Markdown draft. Exit 1 is a finding, and editing the pitch to pass is the job.
 
 Word-level swap tables: `references/writing-quality.md` and the two vendored lists beside it.
 

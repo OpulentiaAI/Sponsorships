@@ -60,11 +60,11 @@ Bands and their requirements are in `sponsor-fit-and-outreach.md`.
 
 ## Outreach
 
-`outreach.reason_to_engage` needs `reason_source_url`. Before rendering, `outreach.send_state` is `pending_draft`. A rendered message that passes delivery is `ready_to_send`, with `review_state: not_required` and `sender_authority: authorized`.
+`outreach.reason_to_engage` needs `reason_source_url`. Before drafting, `outreach.send_state` is `pending_draft`. A Markdown message that passes delivery is `ready_to_send`, with `review_state: not_required` and `sender_authority: authorized`.
 
 `outreach.package_named` is a rate-card tier verbatim, or null. The rate card is the deck's own (slide 7) and may be shown and named; availability was never supplied and is never implied. The validator checks the tier name on the sponsor record and on every derived message.
 
-A rendered draft writes `draft_html_path` and `draft_text_path` into the dossier, and the packet derives `messages[]` from them — one artifact carries the whole run.
+A Gmail-ready draft writes `draft_markdown_path` into the dossier, and the packet derives `messages[]` from it — one artifact carries the whole run. Markdown replaces React Email and HTML only; the authorship and evidence contract remains unchanged.
 
 ## What the validator refuses
 
@@ -76,7 +76,7 @@ Structure, in every mode:
 - A draft path or subject line on any blocked target.
 - A named package that is not a rate-card tier, on the sponsor or in a message.
 - `already_in_motion_state` set to anything but `clear` or `unverified_against_rule` — and `clear` only once the client's exclusion gate is resolved.
-- A rendered message whose `send_state` is not `ready_to_send`, whose `review_state` is not `not_required`, or whose sender authority is not `authorized`.
+- A Markdown message whose `send_state` is not `ready_to_send`, whose `review_state` is not `not_required`, or whose sender authority is not `authorized`.
 - An `executed` operation with no receipt.
 - A disputed attendance figure inside a drafted message.
 - A bearer token or API key anywhere in the packet.
@@ -86,4 +86,4 @@ The full gather, in default mode (`--partial` skips only this block):
 - An open target with `fit.band` or `fit.rationale` unwritten.
 - A `strong` or `plausible` band without its evidence rule met, or without counter-evidence.
 - Missing `reason_to_engage`, `reason_source_url`, `subject`, or `preview_text`.
-- No rendered draft attached, or draft paths pointing at files that do not exist.
+- No Markdown draft attached, or a draft path pointing at a file that does not exist.

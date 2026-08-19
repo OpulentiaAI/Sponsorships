@@ -43,23 +43,6 @@ const campaign = arg("campaign", null);
 const campaignArgs = campaign ? ["--campaign", campaign] : [];
 const targetId = arg("target", null);
 
-// A fresh clone has no node_modules, and the draft step needs the React Email packages.
-// Installing here, at the front of the run, is what stops an operator meeting a missing
-// package at the last step and typing the email out by hand instead.
-const repoRoot = resolve(here, "..");
-if (!existsSync(resolve(repoRoot, "node_modules/@react-email/render"))) {
-  const tDep = Date.now();
-  process.stdout.write("  installing render dependencies (first run only)… ");
-  try {
-    await execFileAsync("npm", ["install", "--no-audit", "--no-fund", "--silent"], { cwd: repoRoot });
-    console.log(`${((Date.now() - tDep) / 1000).toFixed(1)}s`);
-  } catch (err) {
-    console.log("failed");
-    console.error(`  npm install failed: ${err.message}`);
-    console.error("  Research still runs; the draft step will retry the install.");
-  }
-}
-
 // ---- 1 · gate the list ------------------------------------------------------
 const tGate = Date.now();
 const gateOut = await run("load_targets.mjs", [...campaignArgs, "--out", "artifacts/cohort.json"]);

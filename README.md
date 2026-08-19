@@ -87,7 +87,7 @@ references/                       disclosed contracts plus campaign, agency, and
     exclusions.csv                the campaign's rule gates
     comparable-events.json        the discovery universe, tiered by the deck's own ICP
     sponsor-competitor-profile.json Bob's approved sponsor categories and person rule
-  templates/                      dossier, packet, and React Email stationery
+  templates/                      dossier and packet templates
 scripts/                          executable workflow, contract tests, optional dashboard
 ```
 

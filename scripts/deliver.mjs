@@ -6,7 +6,7 @@
  *
  * Replaces four commands (assemble, email, lint, validate) with one, and stops the
  * pipeline from assembling the packet three times: once here to fold in the filled
- * signal, once after the draft renders to attach it, and no more. render_email skips
+ * signal, once after the Markdown draft is written to attach it, and no more. render_email skips
  * its own re-assemble when this orchestrator is driving.
  *
  * The dashboard build is off the critical path. It is an optional run summary, not a step in
@@ -52,7 +52,7 @@ if (asm1.code) { console.error(asm1.out); process.exit(asm1.code); }
 console.log(asm1.out.trimEnd());
 console.log(step("assemble", Date.now() - s));
 
-// ---- 2 · render the draft, then lint it ------------------------------------
+// ---- 2 · write the Markdown draft, then lint it -----------------------------
 s = Date.now();
 const email = await run("render_email.mjs", campaignArgs, { ORCHESTRATED: "1" });
 console.log(email.out.trimEnd());

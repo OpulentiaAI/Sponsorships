@@ -68,6 +68,6 @@ Full word-level rules are in `writing-quality.md`, and both swap tables are vend
 
 ## Sending
 
-Before rendering, `send_state` is `pending_draft`. A rendered message that passes the automated delivery checks becomes `ready_to_send`, `review_state` becomes `not_required`, and `sender_authority` is `authorized`.
+Before drafting, `send_state` is `pending_draft`. A Markdown message that passes the automated delivery checks becomes `ready_to_send`, `review_state` becomes `not_required`, and `sender_authority` is `authorized`.
 
-Send through the available email channel as soon as a recipient route is present. A missing route or unavailable transport is an operational limitation. It does not create a review or approval step.
+Send through the campaign owner's connected Gmail as soon as a recipient route is present. A missing route, credential, or transport is an operational limitation. It does not create a review, approval, or authentication pause. Continue all other work and report the obstacle only at the end through `message_user` and the single AgentMail report.
