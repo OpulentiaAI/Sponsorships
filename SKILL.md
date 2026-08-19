@@ -47,7 +47,7 @@ sample. When several campaigns exist, pass `--campaign <key>`.
 5. Follow the brief's NEXT lines. Do not open `references/` until a trigger below fires.
 6. Never ask for `CONTEXT_DEV_API_KEY` in chat. If the brief reports it missing, one `message_user(block_on_user=true)` offering Opulent Secrets.
 7. For mass discovery or a multi-target run: `document_manage(action="read")` at start, create once if absent, append at each phase.
-8. After delivery passes, send through the available email channel when a recipient route is present. Otherwise attach `/opulent/workspace/artifacts/packet.json`, `pitch.html`, and `pitch.txt` on `message_user` as send-ready files.
+8. After delivery passes, send through the campaign owner's connected email account when a recipient route is present. AgentMail is not a valid transport. If the owner's connected mailbox is unavailable, attach `/opulent/workspace/artifacts/packet.json`, `pitch.html`, and `pitch.txt` on `message_user` as send-ready files and record the transport blocker.
 
 When this directory is the workspace itself, `npm run brief` is a local shortcut.
 
@@ -104,7 +104,20 @@ Add `--dashboard` when the optional run summary is useful.
 
 Delivery assembles the dossier, renders the draft, lints the prose, attaches the draft to the packet, and validates the full contract.
 
-Done means lint exits 0, full validation exits 0, and the rendered message appears in `packet.messages[]` with `send_state: ready_to_send` and `review_state: not_required`. Send it through an available email channel without pausing for review. If no recipient route or email transport is available, attach the packet and pitch files on `message_user` and name that operational limitation.
+Done means lint exits 0, full validation exits 0, and the rendered message appears in `packet.messages[]` with `send_state: ready_to_send` and `review_state: not_required`. Send it through the campaign owner's connected email account without pausing for review. If no recipient route or owner-connected mailbox is available, attach the packet and pitch files on `message_user` and name that operational limitation.
+
+## 5. Email the user a deliverability report
+
+After all sponsor send attempts in the run, query the email provider for every returned message ID. Record the strongest status each provider proves: `accepted_by_provider`, `delivered`, `bounced`, `failed`, or `unknown_after_send`. Provider acceptance is not inbox delivery.
+
+Send the user exactly one consolidated email with the subject `Sponsorship outreach delivery report`. Use the campaign owner's connected email account as the only transport; AgentMail is not a valid transport. Keep the report separate from sponsor messages and include one row per send attempt with:
+
+- sponsor and recipient;
+- send timestamp, provider, and message ID;
+- the verified delivery status and when it was checked;
+- every blocker with its next action, or `No blockers reported`.
+
+Done means exactly one report email covers every send attempt in the run and the report itself has a provider message ID or receipt from the owner's connected mailbox. If that mailbox is unavailable, record `report_blocked_owner_email_unavailable`; if its send fails, retry once and record `report_email_failed` with the provider error. Notify the user through `message_user` in either blocked case. The sponsor sends remain complete; the reporting step remains blocked until the single consolidated email succeeds through the owner's connected mailbox.
 
 ## Invariants
 
@@ -117,6 +130,8 @@ Done means lint exits 0, full validation exits 0, and the rendered message appea
 - Property claims come from the dossier, the campaign facts, or Trifecta's source material.
 - The rendered template is the deliverable. Fix a failed render instead of replacing it with handwritten output.
 - A rendered message that passes delivery is ready to send. No separate review or approval step applies.
+- Sponsor messages and the consolidated status report use the campaign owner's connected mailbox. AgentMail is excluded.
+- Each run sends one consolidated deliverability report to the user from the campaign owner's connected mailbox.
 
 ## References
 
