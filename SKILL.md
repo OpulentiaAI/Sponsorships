@@ -68,6 +68,36 @@ Done means `artifacts/discovery/mass-results.json` records every checked state a
 
 Use `--event`, `--check`, and `--emit` for one difficult sponsor page.
 
+## 1b. Reconcile raw evidence before you report
+
+```bash
+node /opulent/workspace/.agents/skills/opulent-sponsor-context-showcase/scripts/reconcile.mjs --rows <n> [--report <run-report.json>] [--report-md <run-report.md>]
+```
+
+A derived dataset is not evidence. The provider's raw capture is, and the two are the same
+thing only when the derived file regenerates from the raw. Run this before reporting any
+discovery or verification pass as complete.
+
+- **Open what you already have before extracting more.** Raw JSON already on disk under
+  `artifacts/` is the first thing a resumed pass reads, not the thing it re-fetches.
+- **Never assemble a result set in a script that does not read the raw files.** A hardcoded
+  dataset in the expected shape is the failure this step exists to catch: it reports clean,
+  it counts right, and nothing in it traces to a page anyone read.
+- **A claim of verified, confirmed, or resolved needs an exact source URL that appears in a
+  provider artifact.** Without one the claim is downgraded, not published.
+- **Counts agree across every artifact of one run.** A Markdown report saying 19 beside a JSON
+  saying 20 means at least one was not regenerated, and neither is usable until they agree
+  because they were rebuilt from the same source.
+- **Every artifact carries this run's timestamp.** A file older than the capture it claims to
+  summarize was not rewritten.
+- **Account for every row the run was given.** Each row ends in a stated state, and a row
+  nobody reached is `not_attempted`, written down. Silence is not a state.
+- **Persist each row as it completes**, not in one write at the end. A pass that dies
+  mid-run should cost the last row rather than all of them.
+
+Done means `reconcile.mjs` exits 0, or every finding it prints is answered by regenerating a
+file or downgrading a claim. Editing a report until it agrees with itself is not answering it.
+
 ## 2. Research one accepted target
 
 ```bash
@@ -177,6 +207,11 @@ Done means exactly one report email covers every send attempt in the run and Age
 ## Invariants
 
 - Write run output under the workspace `artifacts/`. Keep `references/` unchanged during a run.
+- A derived file is evidence only while it regenerates from the raw capture beside it. Reconcile before reporting, and downgrade what does not trace.
+- A secret is never printed. Not the value, not a prefix, not its length, not the metadata around it. Scripts read `CONTEXT_DEV_API_KEY` and every other credential from the environment and no output ever echoes one.
+- A tool call that fails the same way twice is misuse, not bad luck. Change the approach and record what failed instead of retrying the same empty or malformed call.
+- A research or verification run holds the zero-draft, zero-send boundary. No draft is written and nothing is sent, whatever the evidence would support, until the request asks for outreach.
+- Attach the run's deliverables to the final message and stop. Work that continues after its reports are attached is spending the owner's credits on itself.
 - Record an HTTP response and receipt before setting `executed`.
 - Use `unknown` for absence. Use `false` only after dated evidence supports it.
 - A blocked target has no draft.
@@ -214,3 +249,4 @@ Open only the branch needed for the current step. Paths are relative to this ski
 | Check a claim boundary | `references/evidence-policy.md` |
 | Change the dashboard | `references/dashboard-brief.md` |
 | Change discovery routing or tests | `references/scenarios.jsonl` |
+| Reconcile a derived dataset or a run report against raw | `scripts/reconcile.mjs` |

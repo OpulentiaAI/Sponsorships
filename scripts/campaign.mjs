@@ -55,5 +55,41 @@ export function campaignDir(argv = process.argv) {
     : `no campaigns in ${base} — create references/campaigns/<key>/ per references/knowledge/agency/trifecta-profile.md`);
 }
 
+/**
+ * CSV, quote-aware. One implementation, because the regex this replaced dropped every
+ * field on a row beginning with an empty cell and silently disabled the rules it was
+ * reading. A second copy of a parser that has already failed once is a second chance to
+ * fail the same way, so `load_targets.mjs` and `reconcile.mjs` both import these.
+ */
+export function splitRow(line) {
+  const cells = [];
+  let cur = "";
+  let quoted = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (quoted) {
+      if (ch === '"') {
+        if (line[i + 1] === '"') { cur += '"'; i++; }
+        else quoted = false;
+      } else cur += ch;
+    } else if (ch === '"') quoted = true;
+    else if (ch === ",") { cells.push(cur); cur = ""; }
+    else cur += ch;
+  }
+  cells.push(cur);
+  return cells;
+}
+
+export function parseCsv(text) {
+  const [head, ...lines] = text.trim().split(/\r?\n/);
+  const cols = splitRow(head).map((c) => c.trim().toLowerCase());
+  return lines.filter(Boolean).map((line) => {
+    const cells = splitRow(line);
+    const row = {};
+    cols.forEach((c, i) => { row[c] = (cells[i] ?? "").trim(); });
+    return row;
+  });
+}
+
 export const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 export const sender = () => readJson(resolve(agencyDir(), "sender.json"));

@@ -38,7 +38,7 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { existsSync } from "node:fs";
 import { dirname } from "node:path";
 
-import { campaignDir } from "./campaign.mjs";
+import { campaignDir, parseCsv } from "./campaign.mjs";
 
 const campaign = campaignDir();
 const rest = process.argv.slice(2);
@@ -55,44 +55,9 @@ const exclPath = flag("exclusions", `${campaign.dir}/exclusions.csv`);
 const BARE_DOMAIN = /^(?!www\.)(?!https?:)[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i;
 const LINKEDIN_PROFILE = /^https:\/\/(?:(?:www|[a-z]{2,3})\.)?linkedin\.com\/in\/[a-z0-9_%.-]+\/?([?#].*)?$/i;
 
-/**
- * A character scanner, not a regex.
- *
- * The regex this replaces dropped every field on any row beginning with an empty cell —
- * `,already_in_motion,"…"` parsed as five empty strings — which silently disabled the
- * exclusion rules it was reading. A gate that fails open is worse than no gate, and a
- * leading empty column is ordinary in a client's CSV.
- */
-function splitRow(line) {
-  const cells = [];
-  let cur = "";
-  let quoted = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (quoted) {
-      if (ch === '"') {
-        if (line[i + 1] === '"') { cur += '"'; i++; }
-        else quoted = false;
-      } else cur += ch;
-    } else if (ch === '"') quoted = true;
-    else if (ch === ",") { cells.push(cur); cur = ""; }
-    else cur += ch;
-  }
-  cells.push(cur);
-  return cells;
-}
-
-function parseCsv(text) {
-  const [head, ...lines] = text.trim().split(/\r?\n/);
-  const cols = splitRow(head).map((c) => c.trim().toLowerCase());
-  return lines.filter(Boolean).map((line) => {
-    const cells = splitRow(line);
-    const row = {};
-    cols.forEach((c, i) => { row[c] = (cells[i] ?? "").trim(); });
-    return row;
-  });
-}
-
+// parseCsv is the shared quote-aware scanner in campaign.mjs. It replaced a regex that
+// dropped every field on a row beginning with an empty cell, which silently disabled the
+// exclusion rules it was reading; a gate that fails open is worse than no gate.
 const slug = (s) => String(s || "").toLowerCase().normalize("NFKD")
   .replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 

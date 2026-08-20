@@ -51,6 +51,23 @@ The command writes the full result to `artifacts/discovery/mass-results.json`. I
 
 Without `CONTEXT_DEV_API_KEY`, the command writes `artifacts/discovery/mass-plan.json` and records `blocked_missing_credentials`. It does not claim that any search or profile call ran.
 
+## Raw discovery, and what counts as raw
+
+Six mechanisms produce evidence, and each writes a raw capture the derived files are rebuilt from.
+
+| Mechanism | Command | Raw capture it leaves |
+| --- | --- | --- |
+| Mass event extraction | `npm run discover -- --mass` | `artifacts/discovery/mass-raw.json`, one `/web/extract` result per comparable event, plus `mass-plan.json` and `mass-summary.json` |
+| Replay routing | `npm run discover -- --route <raw.json>` | Re-derives `mass-results.json` and `discovered.csv` from a capture already on disk, spending nothing |
+| Manual harvest | `npm run discover -- --event <key>` then `--check` / `--emit` | A per-event brief with quotes, dates, and source URLs; `--emit` refuses an invalid harvest |
+| Per-company provider plan | `npm run calls -- --domain <d> --company "<c>"` | One receipt per call in `artifacts/receipts/`, indexed by `artifacts/calls-summary.json` |
+| Dated activation brief | `npm run signal -- --url <page>` then `--check` | `artifacts/signal.json`, refused when undated or unquoted |
+| Monid gap-fill | `monid discover → inspect → run` | `artifacts/receipts/monid-<slug>.json` plus a hand-appended `artifacts/monid-runs.json` |
+
+`/web/extract` with `factCheck: true` is the only call that returns a citable `Verified` field and nulls what it cannot support. `/web/search` produces candidates, never resolutions: a search hit becomes a person only after `/people/retrieve` on an exact profile URL. Pages that need a login or render client-side are read through an authenticated browser session, and `scrape_signal.mjs` fixes the shape of what comes back so nothing is guessed.
+
+`npm run reconcile` is the check over all of it. It re-derives the routed results from the raw capture, fails on drift, fails when a derived file is older than the capture it summarizes, traces every emitted row and every claimed verification to a URL that appears in a provider artifact, and refuses a report whose counts disagree with themselves or with the Markdown beside it. Pass `--rows <n>` and it accounts for the full target list. Run it before calling a discovery or verification pass complete.
+
 ## Two gates, and why they are gates
 
 **Compliance.** The client's own email flagged age and compliance limits on the cannabis names. Those targets are admitted for research and refused at the draft step. `npm run email` exits 4 rather than warning, because a drafted pitch is one copy-paste away from a sent one.
@@ -103,6 +120,7 @@ references/                       disclosed contracts plus campaign, agency, and
     sponsor-competitor-profile.json Bob's approved sponsor categories and person rule
   templates/                      dossier and packet templates
 scripts/                          executable workflow, contract tests, optional dashboard
+  reconcile.mjs                   derived output must regenerate from the raw capture
 ```
 
 ## What it will not do
@@ -113,6 +131,8 @@ scripts/                          executable workflow, contract tests, optional 
 - Follow a person through more than one employer move.
 - Put a disputed number, an unsupplied package, or an undated claim in a message.
 - Mark a target clear of a rule whose contents nobody has.
+- Assemble a result set from a script that never read the raw provider output, or report a row as verified when nothing on disk carries its source.
+- Print a credential, a credential prefix, or the metadata around one.
 - Send sponsor messages through AgentMail.
 
 ## Sources

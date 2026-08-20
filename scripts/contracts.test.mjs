@@ -354,6 +354,108 @@ test("sender authority permits validated outreach without review, and the sender
   assert.ok(!("sender" in festival), "the campaign packet carries the property, never the sender");
 });
 
+/* ---------------- raw evidence reconciliation ---------------- */
+
+const RECONCILE = resolve(scriptDir, "reconcile.mjs");
+const RAW_CAPTURE = {
+  as_of: "2026-08-18",
+  event_results: [{
+    event: { key: "grammys", name: "Grammy Awards", tier: "3_national_edm", location: "Los Angeles, CA" },
+    sponsors: [{
+      company: "Patron Tequila", category: "tequila", domain: "patrontequila.com",
+      sponsorship_title: "Official Tequila Partner", sponsorship_date: "2026-01-15",
+      spokesperson_name: "Jamie Rivera", spokesperson_title: "Vice President of USA, Patron Tequila",
+      quote: "Official Tequila Partner", source_url: "https://example.com/patron-activation",
+    }],
+  }],
+};
+
+function reconcileRun(dir, flags = []) {
+  try {
+    const out = run(RECONCILE, flags, { cwd: dir, stdio: "pipe" });
+    return { code: 0, out };
+  } catch (err) {
+    return { code: err.status, out: String(err.stdout) + String(err.stderr) };
+  }
+}
+
+function routedWorkspace() {
+  const dir = mkdtempSync(join(tmpdir(), "reconcile-"));
+  mkdirSync(join(dir, "artifacts/discovery"), { recursive: true });
+  const rawPath = join(dir, "artifacts/discovery/mass-raw.json");
+  writeFileSync(rawPath, JSON.stringify(RAW_CAPTURE));
+  run(DISCOVER, ["--route", rawPath, "--as-of", "2026-08-18", "--replace"], { cwd: dir });
+  return { dir, rawPath };
+}
+
+test("reconcile refuses to pass a derived dataset with no raw capture behind it", () => {
+  const dir = mkdtempSync(join(tmpdir(), "reconcile-bare-"));
+  const result = reconcileRun(dir);
+  assert.equal(result.code, 2);
+  assert.match(result.out, /A derived dataset with no raw provider/);
+});
+
+test("a routed run reconciles clean against the capture it came from", () => {
+  const { dir } = routedWorkspace();
+  const result = reconcileRun(dir, ["--as-of", "2026-08-18"]);
+  assert.equal(result.code, 0, result.out);
+  assert.match(result.out, /reconcile: clean/);
+});
+
+test("a manufactured report is caught: untraced claims, a self-conflicting count, and a Markdown that disagrees", () => {
+  const { dir } = routedWorkspace();
+  // The shape of the real failure: rows assembled by a script that never read the raw
+  // extraction, a total that matches neither the array nor the Markdown beside it.
+  writeFileSync(join(dir, "report.json"), JSON.stringify({
+    verified_count: 20,
+    records: [
+      { company: "Alpha", verification_state: "verified", source: "https://alpha.example/contact" },
+      { company: "Patron Tequila", verification_state: "verified", source: "https://example.com/patron-activation" },
+    ],
+  }));
+  writeFileSync(join(dir, "report.md"), [
+    "| Company | State |", "| --- | --- |", "| Alpha | verified |",
+  ].join("\n"));
+  const result = reconcileRun(dir, ["--as-of", "2026-08-18", "--report", "report.json", "--report-md", "report.md", "--rows", "33"]);
+  assert.equal(result.code, 1);
+  assert.match(result.out, /claim-untraced\s+Alpha/);
+  assert.doesNotMatch(result.out, /claim-untraced\s+Patron/);   // this one traces to the capture
+  assert.match(result.out, /count-conflict.*verified_count says 20/);
+  assert.match(result.out, /count-conflict.*tabulates 1 row/);
+  assert.match(result.out, /row-accounting.*33 row\(s\) and accounts for 2/);
+  assert.match(result.out, /never a line to edit out/);
+});
+
+test("a derived file older than its raw capture is named as stale, with the count drift beside it", () => {
+  const { dir, rawPath } = routedWorkspace();
+  const grown = structuredClone(RAW_CAPTURE);
+  grown.event_results[0].sponsors.push({
+    company: "Ghost Seltzer", category: "seltzer", domain: "ghostseltzer.com",
+    sponsorship_title: "Official Seltzer", sponsorship_date: "2026-02-10",
+    spokesperson_name: "Sam Lee", spokesperson_title: "Director of Brand Marketing",
+    quote: "Official Seltzer Partner", source_url: "https://example.com/ghost-activation",
+  });
+  writeFileSync(rawPath, JSON.stringify(grown));
+  const result = reconcileRun(dir, ["--as-of", "2026-08-18"]);
+  assert.equal(result.code, 1);
+  assert.match(result.out, /derived-stale/);
+  assert.match(result.out, /count-conflict.*counts\.observed: results say 1, the raw capture yields 2/);
+});
+
+test("SKILL.md carries the raw-evidence rules the reconcile step exists for", () => {
+  assert.match(nestedSkill, /## 1b\. Reconcile raw evidence before you report/);
+  assert.match(nestedSkill, /scripts\/reconcile\.mjs --rows/);
+  assert.match(nestedSkill, /A derived dataset is not evidence/);
+  assert.match(nestedSkill, /Never assemble a result set in a script that does not read the raw files/);
+  assert.match(nestedSkill, /Counts agree across every artifact of one run/);
+  assert.match(nestedSkill, /Account for every row the run was given/);
+  assert.match(nestedSkill, /Silence is not a state/);
+  assert.match(nestedSkill, /Editing a report until it agrees with itself is not answering it/);
+  assert.match(nestedSkill, /A secret is never printed/);
+  assert.match(nestedSkill, /fails the same way twice is misuse/);
+  assert.match(nestedSkill, /zero-draft, zero-send boundary/);
+});
+
 /* ---------------- the client's own writing ---------------- */
 
 // Bob's two cold emails are the register every draft is written in, and they are stored
