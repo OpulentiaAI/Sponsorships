@@ -34,7 +34,7 @@ const run = (script, args, opts = {}) =>
 test("the skill has one discoverable root and only references and scripts beneath it", () => {
   assert.equal(existsSync(resolve("SKILL.md")), true);
   const children = readdirSync(skillDir, { withFileTypes: true });
-  const ignore = new Set(["node_modules", "artifacts"]);
+  const ignore = new Set(["node_modules", "artifacts", "deliveries"]);
   assert.deepEqual(
     children.filter((entry) => entry.isDirectory() && !entry.name.startsWith(".") && !ignore.has(entry.name)).map((entry) => entry.name).sort(),
     ["references", "scripts"],

@@ -142,6 +142,8 @@ references/                       disclosed contracts plus campaign, agency, and
     comparable-events.json        the discovery universe, tiered by the deck's own ICP
     sponsor-competitor-profile.json Bob's approved sponsor categories and person rule
   templates/                      dossier and packet templates
+deliveries/                       authored output kept by the campaign owner; no script reads it
+  nocturnal-valley-2026-08-20/    75-row send package: manifest.json plus one Markdown record per row
 scripts/                          executable workflow, contract tests, optional dashboard
   reconcile.mjs                   derived output must regenerate from the raw capture
   run_calls.mjs                   the enrichment catalog: every call names the field it fills

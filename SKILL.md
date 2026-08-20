@@ -17,7 +17,8 @@ metadata:
 # Opulent sponsor context
 
 Requires Node.js 20+. This directory is the skill package: `SKILL.md` at the root,
-with `references/` and `scripts/` only. Live discovery uses `CONTEXT_DEV_API_KEY` from
+with `references/` and `scripts/` only. `deliveries/` is not part of the package: it holds
+authored output the campaign owner chose to keep in the repository, and no script reads it. Live discovery uses `CONTEXT_DEV_API_KEY` from
 the workspace environment or Opulent Secrets, never chat. Without it, the run plans
 and records `blocked_missing_credentials` while continuing every available step.
 
