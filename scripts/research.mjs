@@ -77,8 +77,12 @@ const tPar = Date.now();
 const [callsOut, brandOut] = await Promise.all([
   (async () => {
     const s = Date.now();
+    // What the row already answers is not bought again: a dated lead from discovery
+    // stands in for the activation search, and the client list's category for NAICS.
     const out = await run("run_calls.mjs", [
       "--domain", target.domain, "--company", target.company,
+      ...(target.activation_lead_source ? ["--lead", target.activation_lead_source] : []),
+      ...(target.category ? ["--category", target.category] : []),
       ...(linkedinUrl ? ["--linkedin-url", linkedinUrl] : []),
     ]);
     return { out, ms: Date.now() - s };

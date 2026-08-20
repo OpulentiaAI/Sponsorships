@@ -2,6 +2,8 @@
 
 What the provider can do, what each call costs, and which one to reach for at each stage of this run. Credits are the published figures; treat them as the planning unit, because the budget is set before the run and reported after it.
 
+This file is the catalog. `enrichment-contract.md` is the rule for spending from it: a call runs when a required field is unanswered and this call is the cheapest thing that answers it. Most of what follows is available rather than planned, and `scripts/run_calls.mjs` carries which is which.
+
 Base `https://api.context.dev/v1` · `Authorization: Bearer $CONTEXT_DEV_API_KEY` · server-side only, never logged.
 
 ## Identity: company first, person second
@@ -37,6 +39,8 @@ For a current employer found on a retrieved profile, use `{ "type": "by_name", "
 
 ## Presentation and proof
 
+Every call in this section is opt-in. None of them fills a required field, so `run_calls.mjs` skips them unless `--include` names one and `--reason` says what this target's dossier will do with the answer.
+
 | Call | Method | Credits | Use for |
 | --- | --- | --- | --- |
 | `/web/screenshot` | GET | 5 | A rendered image of the firm's site for the dossier. `fullScreenshot`, `handleCookiePopup`, and a `page` enum including `careers` and `pricing`. |
@@ -50,6 +54,10 @@ For a current employer found on a retrieved profile, use `{ "type": "by_name", "
 | --- | --- | --- | --- |
 | `/brand/ai/product` | POST | 10 | One product page into structured fields. |
 | `/brand/ai/products` | POST | 10 | A firm's product line, up to 12. Beta. |
+
+## Product and market, and the rest of the catalog
+
+Everything above that the plan does not name is available, not planned. Reaching for it needs the same justification as any opt-in call: the field it answers, and why the cheaper answer already on file is not enough.
 
 ## Rules that apply to every call
 

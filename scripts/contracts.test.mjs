@@ -51,6 +51,7 @@ test("the skill has one discoverable root and only references and scripts beneat
   assert.doesNotMatch(nestedSkill, /disable-model-invocation:/);
   for (const file of [
     "contextdev-capabilities.md", "content-editing.md", "dashboard-brief.md",
+    "enrichment-contract.md",
     "email-adaptation.md", "email-style.md", "evidence-policy.md",
     "monid-capabilities.md", "scenarios.jsonl", "sponsor-dossier-contract.md",
     "sponsor-fit-and-outreach.md", "writing-quality.md",
@@ -220,7 +221,62 @@ test("a missing key records blocked and exits 0, so the run continues", () => {
     { cwd: dir, env: { ...process.env, CONTEXT_DEV_API_KEY: "" } });
   const summary = JSON.parse(readFileSync(join(dir, "artifacts/calls-summary.json"), "utf8"));
   assert.equal(summary.status, "blocked_missing_credentials");
-  assert.equal(summary.planned_credits, 90);
+  // A blind row is the worst case and still not the whole catalog: the six calls that
+  // fill a required field, never the six that fill none.
+  assert.equal(summary.catalog_credits, 90);
+  assert.equal(summary.planned_credits, 51);
+  assert.equal(summary.credits_saved, 39);
+  const planned = summary.calls.filter((c) => c.status === "blocked_missing_credentials").map((c) => c.id);
+  assert.deepEqual(planned, ["01-brand", "02-naics", "06-markdown", "10-activation", "11-experiential", "12-market"]);
+  for (const c of summary.calls.filter((c) => c.status === "skipped_not_needed")) {
+    assert.ok(c.skip_reason, `${c.id} skipped with no reason`);
+  }
+});
+
+test("a row that already carries a lead and a category does not buy either again", () => {
+  const dir = mkdtempSync(join(tmpdir(), "calls-need-"));
+  run(resolve(scriptDir, "run_calls.mjs"), [
+    "--domain", "acme.com", "--company", "Acme",
+    "--lead", "https://example.com/acme-activation", "--category", "beer", "--dry-run",
+  ], { cwd: dir });
+  const summary = JSON.parse(readFileSync(join(dir, "artifacts/calls-summary.json"), "utf8"));
+  assert.equal(summary.planned_credits, 21);
+  assert.equal(summary.credits_saved, 69);
+  const skipped = Object.fromEntries(summary.calls
+    .filter((c) => c.status === "skipped_not_needed").map((c) => [c.id, c.skip_reason]));
+  assert.match(skipped["10-activation"], /discovery already handed this row a dated page/);
+  assert.match(skipped["02-naics"], /already assigns a category/);
+  assert.match(skipped["11-experiential"], /comes from reading the row's lead/);
+  assert.match(skipped["08-styleguide"], /fills no required field/);
+});
+
+test("a call that fills no required field cannot run without a stated reason", () => {
+  const dir = mkdtempSync(join(tmpdir(), "calls-optin-"));
+  assert.throws(() => run(resolve(scriptDir, "run_calls.mjs"),
+    ["--domain", "acme.com", "--company", "Acme", "--include", "styleguide", "--dry-run"],
+    { cwd: dir, stdio: "pipe" }), /status 2|Command failed/);
+
+  run(resolve(scriptDir, "run_calls.mjs"), [
+    "--domain", "acme.com", "--company", "Acme", "--include", "styleguide",
+    "--reason", "the client asked for a visual one-pager", "--dry-run",
+  ], { cwd: dir });
+  const summary = JSON.parse(readFileSync(join(dir, "artifacts/calls-summary.json"), "utf8"));
+  const styleguide = summary.calls.find((c) => c.id === "08-styleguide");
+  assert.equal(styleguide.status, "dry_run");
+  assert.equal(styleguide.opt_in_reason, "the client asked for a visual one-pager");
+  assert.equal(styleguide.fills, null);
+});
+
+test("every catalogued call names the field it fills or the lane that makes it opt-in", async () => {
+  const src = await readFile(resolve(scriptDir, "run_calls.mjs"), "utf8");
+  // A call added without a lane and a reason is how the unconditional plan came back.
+  const entries = src.match(/\{ id: "\d\d-[a-z-]+"/g) ?? [];
+  assert.ok(entries.length >= 12, `expected the full catalog, found ${entries.length}`);
+  assert.equal((src.match(/lane: "core"/g) ?? []).length, 1);
+  assert.equal((src.match(/lane: "need"/g) ?? []).length, 6);
+  assert.equal((src.match(/lane: "opt_in"/g) ?? []).length, 6);
+  assert.equal((src.match(/why:/g) ?? []).length, entries.length);
+  assert.equal((src.match(/skipReason:/g) ?? []).length, 6);
 });
 
 /* ---------------- the voice lint ---------------- */
@@ -647,7 +703,9 @@ test("country LinkedIn profile URLs are accepted and carried into the call summa
     { cwd: dir });
   const summary = JSON.parse(readFileSync(join(dir, "artifacts/calls-summary.json"), "utf8"));
   assert.equal(summary.subject.linkedin_url, "https://uk.linkedin.com/in/example-person");
-  assert.ok(summary.calls.some((call) => call.path === "/people/retrieve"));
+  // Planned and executed calls carry the same shape, so a dry run reads like a live one.
+  assert.ok(summary.calls.some((call) => call.endpoint === "/people/retrieve"));
+  assert.equal(summary.calls.find((call) => call.endpoint === "/people/retrieve").fills, "decision_maker");
 });
 
 test("naics and sic take input, while styleguide takes domain", async () => {

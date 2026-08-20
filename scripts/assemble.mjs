@@ -246,6 +246,8 @@ Object.assign(packet, {
     planned_calls: summary.calls?.length ?? 0,
     credit_budget: summary.planned_credits ?? null,
     credits_spent: summary.credits_spent ?? null,
+    credits_saved: summary.credits_saved ?? null,
+    calls_skipped_not_needed: summary.skipped ?? null,
   },
   excluded: (cohort.blocked ?? []).map((b) => ({ company: b.company, category: b.category, reason: (b.problems ?? []).join("; ") })),
   sponsors: [dossier],
@@ -287,6 +289,9 @@ Object.assign(packet, {
       http_status: c.http_status ?? null,
       credits: c.credits ?? null,
       receipt: c.receipt ?? null,
+      fills: c.fills ?? null,
+      ...(c.skip_reason ? { skip_reason: c.skip_reason } : {}),
+      ...(c.opt_in_reason ? { opt_in_reason: c.opt_in_reason } : {}),
       write_policy: "artifact_only_no_send",
     })),
     // The Monid lane: hand-kept run ledger, same evidence contract. COMPLETED earns

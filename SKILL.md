@@ -106,7 +106,33 @@ node /opulent/workspace/.agents/skills/opulent-sponsor-context-showcase/scripts/
 
 Research runs the target gates, company calls, and first dossier assembly. A decision-maker call receives an exact profile URL only. General search results remain candidates until retrieval succeeds.
 
-Done means the cohort counts are printed, every call has a terminal state, and the first dossier is assembled.
+### Buy only what a required field is missing
+
+A call runs when a required field is unanswered and this call is the cheapest thing that
+answers it. `references/enrichment-contract.md` carries the catalog, the lanes, and the
+per-field triggers; the rules that decide a run are these.
+
+- **The ten required fields are the only demand.** A call that fills none of them is
+  decoration until someone states what this target's dossier will do with the answer.
+  `run_calls.mjs --include` refuses to run one without `--reason`, and "completeness" is
+  not a reason.
+- **The row already answers some of it.** A dated `activation_lead_source` from discovery
+  stands in for the activation search. The client list's category stands in for NAICS.
+  `research.mjs` passes both, and the search that would buy them again is skipped.
+- **`/brand/retrieve` answers more than it looks like.** Its address settles
+  `regional_presence` and its `industries.eic` settles `category_fit`, which is why the
+  runner works in two waves: nothing in wave two pays for what wave one returned.
+- **A skip is a decision and carries its reason**, the way an execution carries a receipt.
+  Both land in `artifacts/calls-summary.json` and in the packet's operation ledger.
+- **Monid activates on four conditions, all of them**: a named field still unanswered, no
+  Context.dev answer or a gated one, `monid discover` returning an endpoint for that field,
+  and `monid inspect` before `monid run`. Browsing the catalog to see what exists is the
+  habit this rule exists to stop.
+- **Thoroughness is answered fields, not executed calls.** The full catalog is 90 credits a
+  target; a discovered row needs 11 to 21. The difference was receipts nothing opened.
+
+Done means the cohort counts are printed, every call has a terminal state, every skip has a
+stated reason, and the first dossier is assembled.
 
 ## 3. Write the judgement
 
@@ -207,6 +233,7 @@ Done means exactly one report email covers every send attempt in the run and Age
 ## Invariants
 
 - Write run output under the workspace `artifacts/`. Keep `references/` unchanged during a run.
+- A provider call needs an unanswered required field behind it. Decoration is opt-in with a stated reason, a blocked target is never enriched, and no call re-buys what the client, the row, or an earlier response already supplied.
 - A derived file is evidence only while it regenerates from the raw capture beside it. Reconcile before reporting, and downgrade what does not trace.
 - A secret is never printed. Not the value, not a prefix, not its length, not the metadata around it. Scripts read `CONTEXT_DEV_API_KEY` and every other credential from the environment and no output ever echoes one.
 - A tool call that fails the same way twice is misuse, not bad luck. Change the approach and record what failed instead of retrying the same empty or malformed call.
@@ -242,6 +269,7 @@ Open only the branch needed for the current step. Paths are relative to this ski
 | Turn dossier or deck material into email copy | `references/email-adaptation.md` |
 | Ground a draft before writing, or edit one before sending | `references/content-editing.md` |
 | Cite a property fact or rate-card tier | `references/campaigns/<key>/deck-facts.md` |
+| Decide whether a call is worth its credits | `references/enrichment-contract.md` |
 | Change a provider call | `references/contextdev-capabilities.md` |
 | Use Monid for discovery or gap filling | `references/monid-capabilities.md` |
 | Change field shape or validation | `references/sponsor-dossier-contract.md` |

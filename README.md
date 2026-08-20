@@ -68,6 +68,29 @@ Six mechanisms produce evidence, and each writes a raw capture the derived files
 
 `npm run reconcile` is the check over all of it. It re-derives the routed results from the raw capture, fails on drift, fails when a derived file is older than the capture it summarizes, traces every emitted row and every claimed verification to a URL that appears in a provider artifact, and refuses a report whose counts disagree with themselves or with the Markdown beside it. Pass `--rows <n>` and it accounts for the full target list. Run it before calling a discovery or verification pass complete.
 
+## What it buys, and what it refuses to buy
+
+A call runs when a required field is unanswered and that call is the cheapest thing that answers it. Nothing else runs.
+
+The plan used to be twelve Context.dev calls per target, ninety credits, unconditionally. An audit of what the downstream files actually read found that `assemble.mjs` opens six of the twelve responses and only two of them feed a required field. The other eighty credits per target bought receipts nothing opened, and every call returned 200 while it happened. That is why this is a contract rather than a habit.
+
+`scripts/run_calls.mjs` now carries a catalog where every entry names the field it fills and the condition that makes it worth its credits, in three lanes:
+
+- **core** — `/brand/retrieve`, always. It also decides the rest: its address answers `regional_presence` and its `industries.eic` answers `category_fit`, so the runner works in two waves and nothing in the second pays for what the first returned.
+- **need** — runs only while its field is unanswered. A dated lead from discovery stands in for the activation search; the client list's category stands in for NAICS. `research.mjs` passes both.
+- **opt_in** — fills no required field. SIC, sitemap, crawl, screenshot, styleguide, fonts. Off unless `--include` names one, and `--include` without `--reason` exits 2. "Completeness" is not a reason.
+
+| Row | Calls | Credits |
+| --- | --- | --- |
+| The old unconditional plan | 12 | 90 |
+| Blind client-list row | 6 | 51 |
+| Discovered row with a lead and a category | 3 | 21 |
+| The same row once `/brand/retrieve` returns an address | 2 | 11 |
+
+A skip is a decision, so it carries a reason the way an execution carries a receipt: both land in `artifacts/calls-summary.json` and in the packet's operation ledger as `skipped_not_needed`. When a reviewer asks why a field is `unknown`, the answer sits beside it, and "we did not look, here is what that saved" is a legitimate answer.
+
+Monid activates on four conditions, all of them: a named required field still unanswered after the Context.dev lanes, no Context.dev answer or a gated one, `monid discover` returning an endpoint for that field, and `monid inspect` before `monid run`. Browsing the catalog to see what exists is the habit that rule exists to stop. `references/enrichment-contract.md` carries the whole thing.
+
 ## Two gates, and why they are gates
 
 **Compliance.** The client's own email flagged age and compliance limits on the cannabis names. Those targets are admitted for research and refused at the draft step. `npm run email` exits 4 rather than warning, because a drafted pitch is one copy-paste away from a sent one.
@@ -121,6 +144,7 @@ references/                       disclosed contracts plus campaign, agency, and
   templates/                      dossier and packet templates
 scripts/                          executable workflow, contract tests, optional dashboard
   reconcile.mjs                   derived output must regenerate from the raw capture
+  run_calls.mjs                   the enrichment catalog: every call names the field it fills
 ```
 
 ## What it will not do
@@ -132,6 +156,7 @@ scripts/                          executable workflow, contract tests, optional 
 - Put a disputed number, an unsupplied package, or an undated claim in a message.
 - Mark a target clear of a rule whose contents nobody has.
 - Assemble a result set from a script that never read the raw provider output, or report a row as verified when nothing on disk carries its source.
+- Spend a credit on a field that is already answered, on a blocked target, or on a call whose response nothing downstream reads.
 - Print a credential, a credential prefix, or the metadata around one.
 - Send sponsor messages through AgentMail.
 

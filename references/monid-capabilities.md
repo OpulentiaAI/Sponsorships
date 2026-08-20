@@ -31,6 +31,17 @@ Every executed run is appended by hand to `artifacts/monid-runs.json`:
 
 `npm run assemble` folds that file into the packet's operation ledger. Status mapping is fixed: `COMPLETED` → `executed` (receipt required, as everywhere), `BLOCKED` → `blocked_endpoint_access`, `FAILED`/`TIME_OUT` → `failed`, anything still `READY`/`RUNNING` at assemble time → `proposed`. A Monid result is evidence only through this path — no runId and receipt, no `executed`.
 
+## When it activates
+
+Four conditions, all of them, before a single `monid discover` runs. The catalog is unbounded and browsing it is the expensive habit.
+
+1. **A named required field is still unanswered** after the core and need lanes of `run_calls.mjs`. A field whose `state` is not `retrieved`, named out loud. "More context would help" is not a condition.
+2. **Context.dev cannot answer it, or answered with a gate.** A 402 on `/people/retrieve`, a surface Context does not cover, an endpoint absent from the plan.
+3. **`monid discover` returns an endpoint for that field.** An empty catalog answer is a recorded finding and the end of the attempt, never a reason to improvise a scraper.
+4. **`monid inspect` before `monid run`.** Guessing parameters is how a run spends credits on a 400.
+
+What this rules out: browsing the catalog to see what exists, enriching a field Context already answered because a second source would feel stronger, and pulling a social audience for a target whose fit band is already settled. `enrichment-contract.md` carries the same rule for the Context.dev lane.
+
 ## Where it plugs in
 
 | Stage | Question | First `discover` query to try |
@@ -41,7 +52,7 @@ Every executed run is appended by hand to `artifacts/monid-runs.json`:
 | 2 Calls, gap-fill | `audience_overlap` from the brand's own social audience | `instagram profile audience`, `tiktok brand profile` |
 | 2 Calls, gap-fill | `budget_signal` scale from activation coverage | `news search brand activation` |
 
-These are queries to run, not endpoints that exist — the catalog grows weekly and the LinkedIn surface was explicitly empty when checked (2026-08-13). `discover` first, and an empty catalog answer is a recorded finding, never a reason to improvise a scraper.
+These are queries to run, not endpoints that exist — the catalog grows weekly and the LinkedIn surface was explicitly empty when checked (2026-08-13). `discover` first, and an empty catalog answer is a recorded finding, never a reason to improvise a scraper. Each row is a gap-fill, so each one needs the four conditions above to hold before it is worth a query.
 
 ## Rules that do not bend here
 

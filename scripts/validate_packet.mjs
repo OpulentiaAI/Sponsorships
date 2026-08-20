@@ -149,8 +149,12 @@ for (const op of packet.context_operations ?? []) {
   check(/^https:\/\/api\.context\.dev\/v1\/|^monid:/.test(op.endpoint ?? ""), `${op.capability}: endpoint is neither a Context.dev v1 path nor a monid run`);
   check(op.write_policy === "artifact_only_no_send", `${op.capability}: unsafe write policy`);
   check(op.status !== "executed" || Boolean(op.receipt), `${op.capability}: executed operation has no receipt`);
-  check(["executed", "failed", "proposed", "dry_run", "blocked_missing_credentials", "blocked_endpoint_access"].includes(op.status),
+  check(["executed", "failed", "proposed", "dry_run", "blocked_missing_credentials",
+    "blocked_endpoint_access", "skipped_not_needed"].includes(op.status),
     `${op.capability}: unknown status "${op.status}"`);
+  // A skip is a decision, so it carries its reason the way an execution carries a receipt.
+  check(op.status !== "skipped_not_needed" || Boolean(op.skip_reason),
+    `${op.capability}: skipped with no reason recorded`);
 }
 
 // ---- the festival ----------------------------------------------------------
